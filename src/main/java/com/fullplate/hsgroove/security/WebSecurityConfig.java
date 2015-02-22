@@ -1,26 +1,25 @@
 package com.fullplate.hsgroove.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 
-/**
- * TODO: find out the full scope of WebSecurityConfigurerAdapter
- */
 @Configuration
-@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest().fullyAuthenticated(); // TODO: what does this do
-        http.httpBasic(); // TODO: what does this do
-        http.csrf().disable(); // TODO: enable csrf (later)
+        http
+                .csrf().disable() // disable csrf (TODO: enable)
+                .httpBasic() // enable Basic authentication
+                .and()
+                .authorizeRequests()
+                    .antMatchers("/index.html", "/").permitAll() // don't restrict static entry point
+                    .anyRequest().authenticated(); // all requests should be authenticated
     }
 }

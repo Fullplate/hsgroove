@@ -11,11 +11,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-/**
- * TODO: investigate GlobalAuthenticationConfigurerAdapter further
- */
 @Configuration
-public class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter{
+public class AuthenticationConfiguration extends GlobalAuthenticationConfigurerAdapter{
 
     @Autowired
     AccountRepository accountRepository;
