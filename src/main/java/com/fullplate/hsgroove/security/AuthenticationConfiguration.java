@@ -27,7 +27,7 @@ public class AuthenticationConfiguration extends GlobalAuthenticationConfigurerA
         return (username) -> accountRepository
                 .findByUsername(username)
                 .map(account -> new User(account.username, account.password, true, true, true, true,
-                        AuthorityUtils.createAuthorityList("USER", "write")))
+                        AuthorityUtils.createAuthorityList(account.getSecurityRole(), "write")))
                 .orElseThrow(() -> new UsernameNotFoundException("could not find user '" + username + "'"));
     }
 }

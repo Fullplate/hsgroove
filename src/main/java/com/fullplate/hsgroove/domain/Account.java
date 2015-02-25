@@ -2,9 +2,9 @@ package com.fullplate.hsgroove.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Account {
@@ -19,9 +19,25 @@ public class Account {
     @JsonIgnore
     public String password;
 
-    public Account(String username, String password) {
+    @JsonIgnore
+    public String securityRole;
+
+    @OneToMany(mappedBy = "account")
+    @JsonIgnore
+    private Set<Deck> decks = new HashSet<>();
+
+    @OneToMany(mappedBy = "account")
+    @JsonIgnore
+    private Set<Game> games = new HashSet<>();
+
+    public Account(String username, String password, String role) {
         this.username = username;
         this.password = password;
+        if (role.equals("USER") || role.equals("ADMIN")) {
+            this.securityRole = role;
+        } else {
+            this.securityRole = "USER";
+        }
     }
 
     Account() {
@@ -39,4 +55,17 @@ public class Account {
     public String getPassword() {
         return password;
     }
+
+    public String getSecurityRole() {
+        return securityRole;
+    }
+
+    public Set<Deck> getDecks() {
+        return decks;
+    }
+
+    public Set<Game> getGames() {
+        return games;
+    }
+
 }
