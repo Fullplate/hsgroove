@@ -31,8 +31,8 @@ public class Game {
     @Column(nullable = false)
     public Integer oppHeroClass;
 
-    @Column(nullable = false)
-    public String oppArchetype;
+    @ManyToOne
+    public Archetype oppArchetype;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
     public Boolean onCoin;
@@ -40,7 +40,7 @@ public class Game {
     public String notes;
 
     public Game(Account account, Long timestamp, Season season, Integer rank, Deck deck, Integer oppHeroClass,
-                String oppArchetype, Boolean onCoin, String notes) {
+                Archetype oppArchetype, Boolean onCoin, String notes) {
         this.account = account;
         this.timestamp = timestamp;
         this.season = season;
@@ -84,7 +84,7 @@ public class Game {
         return oppHeroClass;
     }
 
-    public String getOppArchetype() {
+    public Archetype getOppArchetype() {
         return oppArchetype;
     }
 

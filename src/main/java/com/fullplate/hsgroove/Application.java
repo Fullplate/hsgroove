@@ -8,13 +8,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * TODO:
+ * - sort out required columns, api validation/exceptions etc.
+ * - create basic front-end forms and lists for each api endpoint
+ * - make a mysql import script, then turn ddl-auto off, and remove addTestData
+ */
+
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
 public class Application {
 
     /**
-     * Add test accounts to the database.
+     * Add test data to the database.
      *
      * @param accountRepository
      * @return
@@ -40,10 +47,10 @@ public class Application {
                     new Season("Season 2 (February)"));
             Game match1 = gameRepository.save(
                     new Game(userAcc1, System.currentTimeMillis(), season1, Rank.NORMAL_1.ordinal(), deck1,
-                            HeroClass.MAGE.ordinal(), "Mech", true, "gr8"));
+                            HeroClass.MAGE.ordinal(), archetype2, true, "gr8"));
             Game match2 = gameRepository.save(
                     new Game(userAcc1, System.currentTimeMillis(), season2, Rank.LEGEND.ordinal(), deck2,
-                            HeroClass.WARLOCK.ordinal(), "Zoo", false, "shit"));
+                            HeroClass.WARLOCK.ordinal(), archetype1, false, "shit"));
 
             Account userAcc2 = new Account("Boris", "qwe", "USER");
             accountRepository.save(userAcc2);

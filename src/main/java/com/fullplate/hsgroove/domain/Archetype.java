@@ -17,6 +17,10 @@ public class Archetype {
     @OneToMany(mappedBy = "archetype")
     private Set<Deck> decks = new HashSet<>();
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "oppArchetype")
+    private Set<Game> games = new HashSet<>();
+
     @Column(nullable = false)
     public String displayName;
 
@@ -40,6 +44,10 @@ public class Archetype {
         return decks;
     }
 
+    public Set<Game> getGames() {
+        return games;
+    }
+
     public String getDisplayName() {
         return this.displayName;
     }
@@ -47,4 +55,5 @@ public class Archetype {
     public Integer getHeroClass() {
         return heroClass;
     }
+
 }

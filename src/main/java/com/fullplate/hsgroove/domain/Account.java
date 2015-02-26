@@ -13,7 +13,6 @@ public class Account {
     @GeneratedValue
     private Long id;
 
-    @JsonIgnore
     public String username;
 
     @JsonIgnore
