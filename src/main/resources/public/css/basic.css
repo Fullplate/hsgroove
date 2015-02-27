@@ -1,3 +1,17 @@
 body {
     font-family: "Arial"
 }
+
+#nav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#nav li {
+    display: inline;
+}
+
+input {
+    margin-bottom: 5px;
+}

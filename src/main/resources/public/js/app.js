@@ -1,27 +1,25 @@
-console.log("hsgroove app.js initiated");
+var app = {
+    init: function() {
+        console.log("hsgroove initiated");
 
-var loginForm = $('#loginForm');
+        this.setupNavigation();
+    },
 
-var getAuthVal = function(username, password) {
-    return "Basic " + btoa(username + ":" + password);
+    // setup bindings for SPA navigation
+    setupNavigation: function() {
+        var navOptions = [$("#accountNav"), $("#decksNav"), $("#matchesNav"), $("#statisticsNav")];
+        var contentDivs = [$("#account"), $("#decks"), $("#matches"), $("#statistics")];
+        contentDivs[0].show();
+        contentDivs[0].siblings().hide();
+
+        for (var i = 0; i < navOptions.length; i++) {
+            (function(i) {
+                navOptions[i].click(function(e) {
+                    contentDivs[i].fadeIn(100).siblings().hide();
+                });
+            })(i);
+        }
+    }
 };
 
-loginForm.submit(function() {
-    console.log("loginForm submit");
-    $.ajax({
-        type: "GET",
-        url: "/api/account",
-        data: 'json',
-        headers: {
-            "Authorization": getAuthVal($('#loginUsername').val(), $('#loginPassword').val())
-        },
-        success: function(res) {
-            console.log("Logged in: " + JSON.stringify(res));
-        },
-        error: function(res) {
-            console.log("Failed to login: " + JSON.stringify(res));
-        }
-    });
-    return false;
-});
-
+app.init();
