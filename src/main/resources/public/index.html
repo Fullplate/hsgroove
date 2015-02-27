@@ -12,33 +12,33 @@
 <img src="images/test-logo.png" alt="Cool Logo" />
 
 <!-- navigation links -->
-<hr>
-<ul id="nav">
-    <li><a id="accountNav" href="#">Account</a></li> |
-    <li><a id="decksNav" href="#">Decks</a></li> |
-    <li><a id="matchesNav" href="#">Matches</a></li> |
-    <li><a id="statisticsNav" href="#">Statistics</a></li>
-</ul>
+<div id="navContainer">
+    <hr>
+    <ul id="nav">
+        <li><a id="accountNav" href="#">Account</a></li>
+        <li><a id="decksNav" href="#">Decks</a></li>
+        <li><a id="matchesNav" href="#">Matches</a></li>
+        <li><a id="statisticsNav" href="#">Statistics</a></li>
+    </ul>
+    <hr>
+</div>
 
 <div id="mainContainer">
     <!-- login/create account -->
     <div id="account">
-        <hr>
-        <h3>Login or create account:</h3>
+        <h2>Login or create account</h2>
         <form id="loginForm">
             <input id="username" type="text" placeholder="Username" /><br>
             <input id="password" type="password" placeholder="Password" /><br>
             <button id="loginButton" type="submit">Login</button>
             <button id="createAccountButton" type="submit">Create Account</button>
         </form>
-        <hr>
     </div>
 
     <!-- view/create decks -->
     <div id="decks">
-        <hr>
         <div id="createDeck">
-            <h3>Create deck:</h3>
+            <h2>Create deck</h2>
             <form id="createDeckForm">
                 <input id="createDeckName" type="text" placeholder="Name" /><br>
                 <input id="createDeckHeroClass" type="number" placeholder="Class" /><br>
@@ -48,17 +48,15 @@
             </form>
         </div>
         <div id="decklist">
-            <h3>Your Decks:</h3>
+            <h2>Your Decks</h2>
             <p>Decks here...</p>
         </div>
-        <hr>
     </div>
 
     <!-- view/create matches -->
     <div id="matches">
-        <hr>
         <div id="addMatch">
-            <h3>Add match:</h3>
+            <h2>Add match</h2>
             <form id="addMatchForm">
                 <input id="addMatchDeck" type="text" placeholder="Deck" /><br>
                 <input id="addMatchRank" type="number" placeholder="Rank" /><br>
@@ -71,18 +69,15 @@
             </form>
         </div>
         <div id="matchlist">
-            <h3>Your matches:</h3>
+            <h2>Your matches</h2>
             <p>Matches here...</p>
         </div>
-        <hr>
     </div>
 
     <!-- view statistics -->
     <div id="statistics">
-        <hr>
-        <h3>Match Statistics</h3>
+        <h2>Match Statistics</h2>
         <p>...</p>
-        <hr>
     </div>
 </div>
 

@@ -1,17 +1,47 @@
 body {
-    font-family: "Arial"
+    font-family: "Arial";
+    background-color: #779ECB;
+}
+
+h2 {
+    font-style: italic;
+    font-weight: normal;
+    font-size: 150%;
+    color: #151515;
+    padding: 20px 0px 20px 0px;
+    margin: 0;
+}
+
+#mainContainer {
+    background-color:rgba(192,192,192,0.5);
+    padding: 0px 20px 20px 20px;
+}
+
+#navContainer {
+    margin-bottom: 20px;
 }
 
 #nav {
     list-style-type: none;
-    margin: 0;
+    margin: 0px 0px 0px 35px;
     padding: 0;
 }
 
 #nav li {
     display: inline;
+    margin-right: 50px;
+}
+
+#nav a {
+    font-size: 150%;
+    color: #151515;
+    text-decoration: none;
+}
+
+#nav a:hover {
+    color: #FFDF00;
 }
 
 input {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
