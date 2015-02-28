@@ -1,6 +1,14 @@
+// simple logging switch
+var DEBUG = true;
+var log = function(msg) {
+    if (DEBUG) {
+        console.log(msg);
+    }
+};
+
 var app = {
     init: function() {
-        console.log("hsgroove initiated");
+        log("hsgroove initiated");
 
         this.appStatus = {
             "authed": false
@@ -112,7 +120,7 @@ var app = {
 
     // convert obj to JSON and POST to url via AJAX request
     postJson: function(url, obj, success, failure) {
-        console.log("postJson: "+JSON.stringify(obj));
+        log("postJson: "+JSON.stringify(obj));
 
         $.ajax({
             type: 'POST',
@@ -134,7 +142,7 @@ var app = {
 
     // called when authed status changes
     updateAuthedStatus: function(authed, logMsg) {
-        console.log("updateAuthedStatus: "+logMsg);
+        log("updateAuthedStatus: "+logMsg);
         this.appStatus.authed = authed;
         this.updateAuthedNavigation();
         $("#password").val("");
@@ -142,7 +150,7 @@ var app = {
 
     // login to API with basic authentication
     doLogin: function() {
-        console.log("doLogin");
+        log("doLogin");
 
         var that = this;
 
@@ -175,23 +183,23 @@ var app = {
 
     // GET /api/decks and populate html
     doGetDecks: function(app) {
-        console.log("doGetDecks");
+        log("doGetDecks");
 
         var app = app || this[0]; // in case called via fetchBindings array
 
         if (!app.appStatus.authed) {
-            console.log("doGetDecks failure (not authed)")
+            log("doGetDecks failure (not authed)")
             return;
         }
 
         $.get("/api/decks", function(res) {
-            console.log(res);
+            log(res);
 
             res = res.reverse(); // display newer results first
             var decklist = $("#decklist");
             decklist.empty();
             for (var i = 0; i < res.length; i++) {
-                console.log(res[i]);
+                log(res[i]);
 
                 var deckString = "";
                 deckString += "<img src='" + app.assets.heroImages[res[i].heroClass].src + "' />";
@@ -206,17 +214,17 @@ var app = {
 
     // GET /api/matches and populate html
     doGetMatches: function(app) {
-        console.log("doGetMatches");
+        log("doGetMatches");
 
         var app = app || this[0]; // in case called via fetchBindings array
 
         if (!app.appStatus.authed) {
-            console.log("doGetMatches failure (not authed)")
+            log("doGetMatches failure (not authed)")
             return;
         }
 
         $.get("/api/games", function(res) {
-            console.log(res);
+            log(res);
 
             res = res.reverse(); // display newer results first
             var matchlist = $("#matchlist");
@@ -224,7 +232,7 @@ var app = {
 
             var currentSeason = "";
             for (var i = 0; i < res.length; i++) {
-                console.log(res[i]);
+                log(res[i]);
 
                 // display season headers
                 var matchSeason = res[i].season.displayName;
@@ -252,12 +260,12 @@ var app = {
 
     // GET /api/statistics and populate html
     doGetStatistics: function() {
-        console.log("doGetStatistics");
+        log("doGetStatistics");
     },
 
     // POST /api/account/create
     doCreateAccount: function() {
-        console.log("doCreateAccount");
+        log("doCreateAccount");
 
         var username = $("#username").val();
         var password = $("#password").val();
@@ -274,18 +282,18 @@ var app = {
         var that = this;
         this.postJson('/api/account/create', accountObj,
             function() {
-                console.log("doCreateAccount success");
+                log("doCreateAccount success");
                 that.doLogin();
             },
             function() {
-                console.log("doCreateAccount failure");
+                log("doCreateAccount failure");
             }
         );
     },
 
     // POST /api/decks and update html
     doCreateDeck: function() {
-        console.log("doCreateDeck");
+        log("doCreateDeck");
 
         // build Deck object
         var deckObj = {};
@@ -295,9 +303,9 @@ var app = {
         var notes = $("#createDeckNotes").val();
 
         // validation
-        console.log(heroClass);
+        log(heroClass);
         if (!heroClass && heroClass !== 0) {
-            console.log("doCreateDeck failure (no heroClass specified)")
+            log("doCreateDeck failure (no heroClass specified)")
             return;
         }
 
@@ -319,7 +327,7 @@ var app = {
         var that = this;
         this.postJson('/api/decks', deckObj,
             function(res) {
-                console.log("doCreateDeck success: " + res);
+                log("doCreateDeck success: " + res);
                 // clear input fields
                 $("#createDeckForm")[0].reset();
 
@@ -327,14 +335,14 @@ var app = {
                 that.doGetDecks(that);
             },
             function(res) {
-                console.log("doCreateDeck failure: " + res);
+                log("doCreateDeck failure: " + res);
             }
         );
     },
 
     // POST /api/games and update html
     doAddMatch: function() {
-        console.log("doAddMatch");
+        log("doAddMatch");
 
         /*var that = this;
         this.postJson('/api/games')*/
