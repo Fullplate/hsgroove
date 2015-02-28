@@ -112,6 +112,8 @@ var app = {
 
     // convert obj to JSON and POST to url via AJAX request
     postJson: function(url, obj, success, failure) {
+        console.log("postJson: "+JSON.stringify(obj));
+
         $.ajax({
             type: 'POST',
             url: url,
@@ -172,10 +174,10 @@ var app = {
     },
 
     // GET /api/decks and populate html
-    doGetDecks: function() {
+    doGetDecks: function(app) {
         console.log("doGetDecks");
 
-        var app = this[0]; // TODO: need to make this work wherever it's called from
+        var app = app || this[0]; // in case called via fetchBindings array
 
         if (!app.appStatus.authed) {
             console.log("doGetDecks failure (not authed)")
@@ -203,10 +205,10 @@ var app = {
     },
 
     // GET /api/matches and populate html
-    doGetMatches: function() {
+    doGetMatches: function(app) {
         console.log("doGetMatches");
 
-        var app = this[0]; // TODO: need to make this work wherever it's called from
+        var app = app || this[0]; // in case called via fetchBindings array
 
         if (!app.appStatus.authed) {
             console.log("doGetMatches failure (not authed)")
@@ -272,7 +274,7 @@ var app = {
         var that = this;
         this.postJson('/api/account/create', accountObj,
             function() {
-                console.log("doCreateAccount success";
+                console.log("doCreateAccount success");
                 that.doLogin();
             },
             function() {
@@ -281,18 +283,61 @@ var app = {
         );
     },
 
-    //
+    // POST /api/decks and update html
     doCreateDeck: function() {
         console.log("doCreateDeck");
 
+        // build Deck object
+        var deckObj = {};
+        var name = $("#createDeckName").val();
+        var heroClass = parseInt($("#createDeckHeroClass").val());
+        var archetype = $("#createDeckArchetype").val();
+        var notes = $("#createDeckNotes").val();
 
+        // validation
+        console.log(heroClass);
+        if (!heroClass && heroClass !== 0) {
+            console.log("doCreateDeck failure (no heroClass specified)")
+            return;
+        }
+
+        // add fields
+        deckObj.heroClass = heroClass;
+        deckObj.name = name;
+        if (archetype) {
+            deckObj.archetype = {
+                "id": -1, // dummy ID until backend has proper validation logic
+                "displayName": archetype,
+                "heroClass": heroClass
+            };
+        }
+        if (notes) {
+            deckObj.notes = notes;
+        }
+
+        // POST Deck object
+        var that = this;
+        this.postJson('/api/decks', deckObj,
+            function(res) {
+                console.log("doCreateDeck success: " + res);
+                // clear input fields
+                $("#createDeckForm")[0].reset();
+
+                // fetch decklist again
+                that.doGetDecks(that);
+            },
+            function(res) {
+                console.log("doCreateDeck failure: " + res);
+            }
+        );
     },
 
-    //
+    // POST /api/games and update html
     doAddMatch: function() {
         console.log("doAddMatch");
 
-
+        /*var that = this;
+        this.postJson('/api/games')*/
     }
 
 };

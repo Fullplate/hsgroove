@@ -28,8 +28,8 @@
     <div id="account">
         <h2>Login or create account</h2>
         <form id="loginForm">
-            <input id="username" type="text" placeholder="Username" /><br>
-            <input id="password" type="password" placeholder="Password" /><br>
+            <input id="username" type="text" placeholder="Username" required /><br>
+            <input id="password" type="password" placeholder="Password" required /><br>
             <button id="loginButton" type="submit">Login</button>
             <button id="createAccountButton" type="submit">Create Account</button>
         </form>
@@ -40,8 +40,20 @@
         <div id="createDeck">
             <h2>Create deck</h2>
             <form id="createDeckForm">
-                <input id="createDeckName" type="text" placeholder="Name" /><br>
-                <input id="createDeckHeroClass" type="number" placeholder="Class" /><br>
+                <input id="createDeckName" type="text" placeholder="Name" required /><br>
+                <label for="createDeckHeroClass">Hero Class: </label>
+                <select id="createDeckHeroClass">
+                    <option disabled selected>Select</option>
+                    <option value=0>Warrior</option>
+                    <option value=1>Shaman</option>
+                    <option value=2>Rogue</option>
+                    <option value=3>Paladin</option>
+                    <option value=4>Hunter</option>
+                    <option value=5>Druid</option>
+                    <option value=6>Warlock</option>
+                    <option value=7>Mage</option>
+                    <option value=8>Priest</option>
+                </select><br>
                 <input id="createDeckArchetype" type="text" placeholder="Archetype" /><br>
                 <input id="createDeckNotes" type="text" placeholder="Notes" /><br>
                 <button id="createDeckButton" type="submit">Create</button>
