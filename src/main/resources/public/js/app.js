@@ -115,6 +115,7 @@ var app = {
         console.log("updateAuthedStatus: "+logMsg);
         this.appStatus.authed = authed;
         this.updateAuthedNavigation();
+        $("#password").val("");
     },
 
     // login to API with basic authentication
@@ -126,7 +127,7 @@ var app = {
         var username = $("#username").val();
         var password = $("#password").val();
         if (!(username && password)) {
-            console.log("Missing: username or password");
+            this.updateAuthedStatus(false, "doLogin failure (missing username/password)")
             return;
         }
 
@@ -232,19 +233,54 @@ var app = {
         console.log("doGetStatistics");
     },
 
-    //
+    // POST /api/account/create
     doCreateAccount: function() {
         console.log("doCreateAccount");
+
+        var username = $("#username").val();
+        var password = $("#password").val();
+        if (!(username && password)) {
+            this.updateAuthedStatus(false, "doCreateAccount failure (missing username/password)")
+            return;
+        }
+
+        var accountObj = {
+            "username": username,
+            "password": password
+        };
+
+        var that = this;
+        $.ajax({
+            type: 'POST',
+            url: '/api/account/create',
+            data: JSON.stringify(accountObj),
+            dataType: 'JSON',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            success: function(res) {
+                console.log("doCreateAccount success");
+                that.doLogin();
+            },
+            error: function(res) {
+                console.log("doCreateAccount failure");
+            }
+        });
     },
 
     //
     doCreateDeck: function() {
         console.log("doCreateDeck");
+
+
     },
 
     //
     doAddMatch: function() {
         console.log("doAddMatch");
+
+
     }
 
 };
