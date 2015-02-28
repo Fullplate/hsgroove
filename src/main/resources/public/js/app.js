@@ -110,6 +110,26 @@ var app = {
         });
     },
 
+    // convert obj to JSON and POST to url via AJAX request
+    postJson: function(url, obj, success, failure) {
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: JSON.stringify(obj),
+            dataType: 'JSON',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            success: function(res) {
+                success(res);
+            },
+            error: function(res) {
+                failure(res);
+            }
+        });
+    },
+
     // called when authed status changes
     updateAuthedStatus: function(authed, logMsg) {
         console.log("updateAuthedStatus: "+logMsg);
@@ -250,23 +270,15 @@ var app = {
         };
 
         var that = this;
-        $.ajax({
-            type: 'POST',
-            url: '/api/account/create',
-            data: JSON.stringify(accountObj),
-            dataType: 'JSON',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            success: function(res) {
-                console.log("doCreateAccount success");
+        this.postJson('/api/account/create', accountObj,
+            function() {
+                console.log("doCreateAccount success";
                 that.doLogin();
             },
-            error: function(res) {
+            function() {
                 console.log("doCreateAccount failure");
             }
-        });
+        );
     },
 
     //
