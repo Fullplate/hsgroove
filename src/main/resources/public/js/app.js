@@ -235,7 +235,6 @@ var app = {
             },
             success: function(res) {
                 if (res.username === username) {
-                    alert("Account created, now logging in...");
                     that.updateAuthedStatus(true, "doLogin success");
                 } else {
                     that.updateAuthedStatus(false, "doLogin failure (server error)");
@@ -266,6 +265,12 @@ var app = {
 
             var decklist = $("#decklist");
             decklist.empty();
+            if (res.length === 0) {
+                decklist.append("<p>No decks found, try adding a deck!</p>");
+                return;
+            }
+
+
             for (var i = 0; i < res.length; i++) {
                 log(res[i]);
 
@@ -299,6 +304,10 @@ var app = {
 
             var matchlist = $("#matchlist");
             matchlist.empty();
+            if (res.length === 0) {
+                matchlist.append("<p>No matches found, try adding a match!</p>");
+                return;
+            }
 
             var currentSeason = "";
             for (var i = 0; i < res.length; i++) {
@@ -354,6 +363,7 @@ var app = {
         this.postJson('/api/account/create', accountObj,
             function() {
                 log("doCreateAccount success");
+                alert("Account created, now logging in...");
                 that.doLogin();
             },
             function() {
