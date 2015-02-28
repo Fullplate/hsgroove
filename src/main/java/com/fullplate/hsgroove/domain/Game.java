@@ -1,7 +1,6 @@
 package com.fullplate.hsgroove.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -35,12 +34,15 @@ public class Game {
     public Archetype oppArchetype;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
+    public Boolean victory;
+
+    @Column(nullable = false, columnDefinition = "TINYINT(1)")
     public Boolean onCoin;
 
     public String notes;
 
     public Game(Account account, Long timestamp, Season season, Integer rank, Deck deck, Integer oppHeroClass,
-                Archetype oppArchetype, Boolean onCoin, String notes) {
+                Archetype oppArchetype, Boolean victory, Boolean onCoin, String notes) {
         this.account = account;
         this.timestamp = timestamp;
         this.season = season;
@@ -48,6 +50,7 @@ public class Game {
         this.deck = deck;
         this.oppHeroClass = oppHeroClass;
         this.oppArchetype = oppArchetype;
+        this.victory = victory;
         this.onCoin = onCoin;
         this.notes = notes;
     }
@@ -86,6 +89,10 @@ public class Game {
 
     public Archetype getOppArchetype() {
         return oppArchetype;
+    }
+
+    public Boolean getVictory() {
+        return victory;
     }
 
     public Boolean getOnCoin() {

@@ -9,7 +9,7 @@
 <body>
 
 <!-- dummy page header -->
-<img src="images/test-logo.png" alt="Cool Logo" />
+<img src="images/header.png" alt="Cool Logo" />
 
 <!-- navigation links -->
 <div id="navContainer">
@@ -47,9 +47,10 @@
                 <button id="createDeckButton" type="submit">Create</button>
             </form>
         </div>
-        <div id="decklist">
-            <h2>Your Decks</h2>
-            <p>Decks here...</p>
+        <div id="decklistContainer">
+            <h2>Your decks</h2>
+            <div id="decklist">
+            </div>
         </div>
     </div>
 
@@ -62,22 +63,25 @@
                 <input id="addMatchRank" type="number" placeholder="Rank" /><br>
                 <input id="addMatchOppClass" type="text" placeholder="Opponent Class" /><br>
                 <input id="addMatchOppArchetype" type="text" placeholder="Opponent Archetype" /><br>
+                <label for="addMatchVictory">Did you win?</label>
+                <input id="addMatchVictory" type="checkbox" /><br>
                 <label for="addMatchOnCoin">Coin? </label>
                 <input id="addMatchOnCoin" type="checkbox" /><br>
                 <input id="addMatchNotes" type="text" placeholder="Notes" /><br>
                 <button id="addMatchButton" type="submit">Add</button>
             </form>
         </div>
-        <div id="matchlist">
+        <div id="matchlistContainer">
             <h2>Your matches</h2>
-            <p>Matches here...</p>
+            <div id="matchlist">
+            </div>
         </div>
     </div>
 
     <!-- view statistics -->
     <div id="statistics">
-        <h2>Match Statistics</h2>
-        <p>...</p>
+        <h2>Match statistics</h2>
+        <p>Coming soon...</p>
     </div>
 </div>
 

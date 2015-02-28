@@ -140,8 +140,8 @@ public class ApiController {
 
                     // create new Game with fetched or created Archetype
                     Game newGame = this.gameRepository.save(new Game(account, game.getTimestamp(), season,
-                            game.getRank(), deck, game.getOppHeroClass(), oppArchetype, game.getOnCoin(),
-                            game.getNotes()));
+                            game.getRank(), deck, game.getOppHeroClass(), oppArchetype, game.getVictory(),
+                            game.getOnCoin(), game.getNotes()));
 
                     return new ResponseEntity<>(newGame, new HttpHeaders(), HttpStatus.CREATED);
                 }).get();

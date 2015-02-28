@@ -47,10 +47,10 @@ public class Application {
                     new Season("Season 2 (February)"));
             Game match1 = gameRepository.save(
                     new Game(userAcc1, System.currentTimeMillis(), season1, Rank.NORMAL_1.ordinal(), deck1,
-                            HeroClass.MAGE.ordinal(), archetype2, true, "gr8"));
+                            HeroClass.MAGE.ordinal(), archetype2, true, true, "gr8"));
             Game match2 = gameRepository.save(
                     new Game(userAcc1, System.currentTimeMillis(), season2, Rank.LEGEND.ordinal(), deck2,
-                            HeroClass.WARLOCK.ordinal(), archetype1, false, "shit"));
+                            HeroClass.WARLOCK.ordinal(), archetype1, false, false, "shit"));
 
             Account userAcc2 = new Account("Boris", "qwe", "USER");
             accountRepository.save(userAcc2);
