@@ -42,7 +42,8 @@
             <form id="createDeckForm">
                 <input id="createDeckName" type="text" placeholder="Name" required /><br>
                 <select id="createDeckHeroClass"></select><br>
-                <input id="createDeckArchetype" type="text" placeholder="Archetype" /><br>
+                <input id="createDeckArchetype" type="text" placeholder="Archetype" list="createDeckArchetypeDl" /><br>
+                <datalist id="createDeckArchetypeDl"></datalist>
                 <textarea id="createDeckNotes" form="createDeckForm" rows="4" cols="40" placeholder="Notes"></textarea>
                 <br><button id="createDeckButton" type="submit">Create</button>
             </form>
@@ -62,7 +63,8 @@
                 <select id="addMatchDeck"></select>
                 <br><select id="addMatchRank"></select>
                 <br><select id="addMatchOppHeroClass"></select>
-                <br><input id="addMatchOppArchetype" type="text" placeholder="Opponent Archetype" />
+                <br><input id="addMatchOppArchetype" type="text" placeholder="Opponent Archetype" list="addMatchOppArchetypeDl" />
+                <datalist id="addMatchOppArchetypeDl"></datalist>
                 <br><input id="addMatchVictoryTrue" type="radio" name="victory" checked> Win
                 <input id="addMatchVictoryFalse" type="radio" name="victory"> Loss
                 <br><input id="addMatchOnCoinFalse" type="radio" name="onCoin" checked> Coin

@@ -12,7 +12,9 @@ var app = {
         };
 
         this.domain = {
-            "classes": ["warrior", "shaman", "rogue", "paladin", "hunter", "druid", "warlock", "mage", "priest"]
+            "classes": ["warrior", "shaman", "rogue", "paladin", "hunter", "druid", "warlock", "mage", "priest"],
+            "knownArchetypes": ["control", "midrange", "aggro", "face", "combo", "OTK", "miracle", "mech",
+                                "deathrattle", "mill"]
         }
 
         this.assets = this.loadAssets();
@@ -127,6 +129,13 @@ var app = {
         for (var i = 0; i < this[0].domain.classes.length; i++) {
             heroClasses.append("<option value='" + i + "'>" + capitalize(this[0].domain.classes[i]) + "</option>");
         }
+
+        // populate createDeckArchetypeDatalist with knownArchetypes
+        var archetypeDatalist = $("#createDeckArchetypeDl");
+        archetypeDatalist.empty();
+        for (var i = 0; i < this[0].domain.knownArchetypes.length; i++) {
+            archetypeDatalist.append("<option value='" + this[0].domain.knownArchetypes[i] + "' />")
+        }
     },
 
     // populate input form for Matches
@@ -164,6 +173,13 @@ var app = {
         oppHeroClasses.append("<option disabled selected>Opponent Hero Class</option>");
         for (var i = 0; i < this[0].domain.classes.length; i++) {
             oppHeroClasses.append("<option value='" + i + "'>" + capitalize(this[0].domain.classes[i]) + "</option>");
+        }
+
+        // populate addMatchOppArchetypeDl with knownArchetypes
+        var archetypeDatalist = $("#addMatchOppArchetypeDl");
+        archetypeDatalist.empty();
+        for (var i = 0; i < this[0].domain.knownArchetypes.length; i++) {
+            archetypeDatalist.append("<option value='" + this[0].domain.knownArchetypes[i] + "' />")
         }
     },
 
