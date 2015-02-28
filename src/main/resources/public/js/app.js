@@ -1,11 +1,3 @@
-// simple logging switch
-var DEBUG = true;
-var log = function(msg) {
-    if (DEBUG) {
-        console.log(msg);
-    }
-};
-
 var app = {
     init: function() {
         log("hsgroove initiated");
@@ -13,6 +5,15 @@ var app = {
         this.appStatus = {
             "authed": false
         };
+
+        this.currData = {
+            "decks": [],
+            "matches": []
+        };
+
+        this.domain = {
+            "classes": ["warrior", "shaman", "rogue", "paladin", "hunter", "druid", "warlock", "mage", "priest"]
+        }
 
         this.assets = this.loadAssets();
         this.setupNavigation();
@@ -32,9 +33,8 @@ var app = {
         }
 
         // load hero images
-        var heroImages = ["warrior", "shaman", "rogue", "paladin", "hunter", "druid", "warlock", "mage", "priest"];
-        for (var i = 0; i < heroImages.length; i++) {
-            assets.heroImages[i] = loadImage("hero/class_" + heroImages[i] + ".png");
+        for (var i = 0; i < this.domain.classes.length; i++) {
+            assets.heroImages[i] = loadImage("hero/class_" + this.domain.classes[i] + ".png");
         }
 
         return assets;
@@ -46,9 +46,10 @@ var app = {
         this.navOptions = [$("#accountNav"), $("#decksNav"), $("#matchesNav"), $("#statisticsNav")];
         this.contentDivs = [$("#account"), $("#decks"), $("#matches"), $("#statistics")];
 
-        // store function calls to fetch data, along with a reference to app
+        // specify functions to be called upon content div loads
         var that = this;
         this.fetchBindings = [that, function(){}, this.doGetDecks, this.doGetMatches, this.doGetStatistics];
+        this.populateInputBindings = [that, function(){}, this.populateDeckInput, this.populateMatchInput, function(){}]
 
         // set the pre-authorized nav link/related div index
         this.preAuthIndex = 0;
@@ -88,6 +89,7 @@ var app = {
                 that.navOptions[i].click(function(e) {
                     that.contentDivs[i].fadeIn(100).siblings().hide();
                     that.fetchBindings[i + 1]();
+                    that.populateInputBindings[i + 1]();
                 });
             })(i);
         }
@@ -96,31 +98,78 @@ var app = {
     // setup bindings between form submits/buttons and AJAXing methods
     setupAjaxBindings: function() {
         var that = this;
-
         $("#loginButton").click(function(e) {
             that.doLogin();
             e.preventDefault();
         });
-
         $("#createAccountButton").click(function(e) {
             that.doCreateAccount();
             e.preventDefault();
         });
-
         $("#createDeckButton").click(function(e) {
             that.doCreateDeck();
             e.preventDefault();
         });
-
         $("#addMatchButton").click(function(e) {
             that.doAddMatch();
             e.preventDefault();
         });
     },
 
+    // populate input form for Decks
+    populateDeckInput: function() {
+        log("populateDeckInput");
+
+        // populate createDeckHeroClass with Hero Classes
+        var heroClasses = $("#createDeckHeroClass");
+        heroClasses.empty();
+        heroClasses.append("<option disabled selected>Hero Class</option>");
+        for (var i = 0; i < this[0].domain.classes.length; i++) {
+            heroClasses.append("<option value='" + i + "'>" + capitalize(this[0].domain.classes[i]) + "</option>");
+        }
+    },
+
+    // populate input form for Matches
+    populateMatchInput: function() {
+        log("populateMatchInput");
+
+        // populate addMatchDeck with user's decks
+        var decks = $("#addMatchDeck");
+        decks.empty();
+        var deckData = this[0].currData.decks;
+        if (deckData.length === 0) {
+            decks.append("<option disabled selected>No decks found, create one first</option>")
+        } else {
+            decks.append("<option disabled selected>Select Deck</option>");
+            for (var i = 0; i < deckData.length; i++) {
+                decks.append("<option value='" + deckData[i].id + "'>" + deckData[i].name + "</option>");
+            }
+        }
+
+        // populate addMatchRank with Legend-25 ranks
+        var ranks = $("#addMatchRank");
+        ranks.empty();
+        ranks.append("<option disabled selected>Ladder rank</option>");
+        for (var i = 0; i < 26; i++) {
+            if (i === 0) {
+                ranks.append("<option value='0'>Legend</option>");
+            } else {
+                ranks.append("<option value='" + i + "'>Rank " + i + "</option>");
+            }
+        }
+
+        // populate addMatchOppHeroClass with Hero Classes
+        var oppHeroClasses = $("#addMatchOppHeroClass");
+        oppHeroClasses.empty();
+        oppHeroClasses.append("<option disabled selected>Opponent Hero Class</option>");
+        for (var i = 0; i < this[0].domain.classes.length; i++) {
+            oppHeroClasses.append("<option value='" + i + "'>" + capitalize(this[0].domain.classes[i]) + "</option>");
+        }
+    },
+
     // convert obj to JSON and POST to url via AJAX request
     postJson: function(url, obj, success, failure) {
-        log("postJson: "+JSON.stringify(obj));
+        log("postJson: "+JSON.stringify(obj, null, 4));
 
         $.ajax({
             type: 'POST',
@@ -162,14 +211,15 @@ var app = {
         }
 
         $.ajax({
-            type: "GET",
-            url: "/api/account",
+            type: 'GET',
+            url: '/api/account',
             dataType: 'json',
             headers: {
-                "Authorization": "Basic " + btoa(username + ":" + password)
+                'Authorization': 'Basic ' + btoa(username + ":" + password)
             },
             success: function(res) {
                 if (res.username === username) {
+                    alert("Account created, now logging in...");
                     that.updateAuthedStatus(true, "doLogin success");
                 } else {
                     that.updateAuthedStatus(false, "doLogin failure (server error)");
@@ -192,10 +242,12 @@ var app = {
             return;
         }
 
-        $.get("/api/decks", function(res) {
+        $.get('/api/decks', function(res) {
             log(res);
 
             res = res.reverse(); // display newer results first
+            app.currData.decks = res; // store results
+
             var decklist = $("#decklist");
             decklist.empty();
             for (var i = 0; i < res.length; i++) {
@@ -223,10 +275,12 @@ var app = {
             return;
         }
 
-        $.get("/api/games", function(res) {
+        $.get('/api/games', function(res) {
             log(res);
 
             res = res.reverse(); // display newer results first
+            app.currData.matches = res; // store results
+
             var matchlist = $("#matchlist");
             matchlist.empty();
 
@@ -247,9 +301,10 @@ var app = {
                 matchString += "<span> VS </span>";
                 matchString += "<img src='" + app.assets.heroImages[res[i].oppHeroClass].src + "' />";
                 matchString += "<span> @ Rank: " + res[i].rank + ", " + ((res[i].victory) ? "WIN" : "LOSS") + "</span>";
-                matchString += "<p>" + res[i].deck.name + " (" + res[i].deck.archetype.displayName + ") versus " +
-                        res[i].oppArchetype.displayName +
-                        ((res[i].onCoin) ? " (you had coin)" : " (you went first)") + "</p>";
+                matchString += "<p>" + res[i].deck.name +
+                        ((res[i].deck.archetype) ? " (" + res[i].deck.archetype.displayName + " )" : "") +
+                        " VS " + ((res[i].oppArchetype) ? res[i].oppArchetype.displayName : " opponent") +
+                        ((res[i].onCoin) ? " (coin)" : " (no coin)") + "</p>";
                 if (res[i].notes) {
                     matchString += "<p>Notes: " + res[i].notes + "</p>";
                 }
@@ -295,21 +350,20 @@ var app = {
     doCreateDeck: function() {
         log("doCreateDeck");
 
-        // build Deck object
-        var deckObj = {};
+        // fetch/parse input
         var name = $("#createDeckName").val();
         var heroClass = parseInt($("#createDeckHeroClass").val());
         var archetype = $("#createDeckArchetype").val();
         var notes = $("#createDeckNotes").val();
 
         // validation
-        log(heroClass);
         if (!heroClass && heroClass !== 0) {
             log("doCreateDeck failure (no heroClass specified)")
             return;
         }
 
-        // add fields
+        // build Deck object
+        var deckObj = {};
         deckObj.heroClass = heroClass;
         deckObj.name = name;
         if (archetype) {
@@ -344,8 +398,60 @@ var app = {
     doAddMatch: function() {
         log("doAddMatch");
 
-        /*var that = this;
-        this.postJson('/api/games')*/
+        // fetch/parse input
+        var deckId = $("#addMatchDeck").val();
+        var rank = parseInt($("#addMatchRank").val());
+        var oppHeroClass = parseInt($("#addMatchOppHeroClass").val());
+        var oppArchetype = $("#addMatchOppArchetype").val();
+        var victory = ($("#addMatchVictoryTrue").is(':checked') ? true : false);
+        var onCoin = ($("#addMatchOnCoinTrue").is(':checked') ? true : false);
+        var notes = $("#addMatchNotes").val();
+
+        // validation
+        if (!rank && rank !== 0) {
+            log("doAddMatch failure (no rank specified)")
+            return;
+        }
+        if (!oppHeroClass && oppHeroClass !== 0) {
+            log("doAddMatch failure (no oppHeroClass specified)")
+            return;
+        }
+
+        // build Match object
+        var matchObj = {};
+        matchObj.deck = {
+            "id": deckId
+        };
+        matchObj.rank = rank;
+        matchObj.oppHeroClass = oppHeroClass;
+        matchObj.victory = victory;
+        matchObj.onCoin = onCoin;
+        if (oppArchetype) {
+            matchObj.oppArchetype = {
+                "id": -1, // dummy ID until backend has proper validation logic
+                "displayName": oppArchetype,
+                "heroClass": oppHeroClass
+            };
+        }
+        if (notes) {
+            matchObj.notes = notes;
+        }
+
+        // POST Match object
+        var that = this;
+        this.postJson('/api/games', matchObj,
+            function(res) {
+                log("doAddMatch success: " + res);
+                // clear input fields
+                $("#addMatchForm")[0].reset();
+
+                // fetch matchlist again
+                that.doGetMatches(that);
+            },
+            function(res) {
+                log("doAddMatch failure: " + res);
+            }
+        );
     }
 
 };
