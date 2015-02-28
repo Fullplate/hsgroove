@@ -42,9 +42,9 @@ public class Application {
             Deck deck2 = deckRepository.save(
                     new Deck(userAcc1, HeroClass.HUNTER.ordinal(), archetype2, "Classic", "<link to deck>"));
             Season season1 = seasonRepository.save(
-                    new Season("Season 1 (January)"));
+                    new Season("Season 1 (January)", 1));
             Season season2 = seasonRepository.save(
-                    new Season("Season 2 (February)"));
+                    new Season("Season 2 (February)", 2));
             Game match1 = gameRepository.save(
                     new Game(userAcc1, System.currentTimeMillis(), season1, Rank.NORMAL_1.ordinal(), deck1,
                             HeroClass.MAGE.ordinal(), archetype2, true, true, "gr8"));

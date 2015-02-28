@@ -20,8 +20,12 @@ public class Season {
     @Column(nullable = false)
     public String displayName;
 
-    public Season(String displayName) {
+    @Column(nullable = false)
+    public Integer chronoId;
+
+    public Season(String displayName, Integer chronoId) {
         this.displayName = displayName;
+        this.chronoId = chronoId;
     }
 
     Season() {
@@ -38,5 +42,9 @@ public class Season {
 
     public Set<Game> getGames() {
         return games;
+    }
+
+    public Integer getChronoId() {
+        return chronoId;
     }
 }

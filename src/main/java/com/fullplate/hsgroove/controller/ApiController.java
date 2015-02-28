@@ -2,6 +2,7 @@ package com.fullplate.hsgroove.controller;
 
 import com.fullplate.hsgroove.domain.*;
 import com.fullplate.hsgroove.exception.AccessDeniedException;
+import com.fullplate.hsgroove.exception.GenericNotFoundException;
 import com.fullplate.hsgroove.exception.UserAlreadyExistsException;
 import com.fullplate.hsgroove.exception.UserNotFoundException;
 import jdk.nashorn.internal.ir.RuntimeNode;
@@ -135,31 +136,26 @@ public class ApiController {
                     if (this.deckRepository.exists(deckId)) {
                         deck = this.deckRepository.findOne(deckId);
                     } else {
-                        deck = null;
+                        throw new GenericNotFoundException("deck id: " + deckId);
                     }
 
-                    // if Archetype exists, fetch and use its values in the new Game
+                    // if optional Archetype exists, fetch and use its values in the new Game
                     // otherwise add the Archetype
-                    Long oppArchetypeId = game.getOppArchetype().getId();
-                    Archetype oppArchetype;
-                    if (this.archetypeRepository.exists(oppArchetypeId)) {
-                        oppArchetype = this.archetypeRepository.findOne(oppArchetypeId);
-                    } else {
-                        oppArchetype = this.archetypeRepository.save(game.getOppArchetype());
+                    Archetype oppArchetype = null;
+                    if (game.getOppArchetype() != null) {
+                        Long oppArchetypeId = game.getOppArchetype().getId();
+                        if (this.archetypeRepository.exists(oppArchetypeId)) {
+                            oppArchetype = this.archetypeRepository.findOne(oppArchetypeId);
+                        } else {
+                            oppArchetype = this.archetypeRepository.save(game.getOppArchetype());
+                        }
                     }
 
-                    // if Season exists, fetch and use its values in the new Game
-                    // otherwise throw exception
-                    Long seasonId = game.getSeason().getId();
-                    Season season;
-                    if (this.seasonRepository.exists(seasonId)) {
-                        season = this.seasonRepository.findOne(seasonId);
-                    } else {
-                        season = null;
-                    }
+                    // get current Season
+                    Season season = this.seasonRepository.findOne(this.seasonRepository.getMaxId().longValue());
 
                     // create new Game with fetched or created Archetype
-                    Game newGame = this.gameRepository.save(new Game(account, game.getTimestamp(), season,
+                    Game newGame = this.gameRepository.save(new Game(account, System.currentTimeMillis(), season,
                             game.getRank(), deck, game.getOppHeroClass(), oppArchetype, game.getVictory(),
                             game.getOnCoin(), game.getNotes()));
 
