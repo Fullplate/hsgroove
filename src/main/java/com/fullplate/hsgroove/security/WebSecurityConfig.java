@@ -21,6 +21,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic() // enable Basic authentication
                 .and()
                 .authorizeRequests()
+                    .antMatchers("/api/account/create").permitAll() // allow Account creation before authentication
                     .antMatchers("/index.html", "/").permitAll() // don't restrict static entry point
                     .anyRequest().authenticated(); // all requests should be authenticated
     }

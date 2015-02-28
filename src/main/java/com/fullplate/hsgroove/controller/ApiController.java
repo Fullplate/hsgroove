@@ -2,6 +2,7 @@ package com.fullplate.hsgroove.controller;
 
 import com.fullplate.hsgroove.domain.*;
 import com.fullplate.hsgroove.exception.AccessDeniedException;
+import com.fullplate.hsgroove.exception.UserAlreadyExistsException;
 import com.fullplate.hsgroove.exception.UserNotFoundException;
 import jdk.nashorn.internal.ir.RuntimeNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,7 @@ public class ApiController {
     }
 
     /**
-     * Get authed Account.
+     * Get authed Account. Can be used as login endpoint.
      */
     @RequestMapping(method = RequestMethod.GET, value = "/account")
     Account getAccountDetails(@AuthenticationPrincipal Principal principal) {
@@ -43,6 +44,25 @@ public class ApiController {
         this.validateUser(username);
         return this.accountRepository.findByUsername(username).orElseThrow(
                 () -> new UserNotFoundException(username));
+    }
+
+    /**
+     * Add new account. Respond with added Account.
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/account/create")
+    ResponseEntity<?> addAccount(@RequestBody Account account) {
+        if (account.getUsername() != null && !account.getUsername().isEmpty()
+                && account.getPassword() != null && !account.getPassword().isEmpty()) {
+            if (this.accountRepository.findByUsername(account.getUsername()).isPresent()) {
+                throw new UserAlreadyExistsException(account.getUsername());
+            } else {
+                Account newAccount = this.accountRepository.save(
+                        new Account(account.getUsername(), account.getPassword(), "USER"));
+                return new ResponseEntity<>(newAccount, new HttpHeaders(), HttpStatus.CREATED);
+            }
+        } else {
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -56,7 +76,7 @@ public class ApiController {
     }
 
     /**
-     * Add Deck under Authed Account.
+     * Add Deck under Authed Account. Respond with added Deck.
      * TODO: add validation for Archetype (or require fields in the Entity definition)
      * e.g. supplied with id known (optional name,class) -> success, fetches Archetype (ignores name,class...correct?)
      *      supplied with id not known,name,class -> success, creates Archetype (ignores id...correct?)
@@ -99,7 +119,7 @@ public class ApiController {
     }
 
     /**
-     * Add Game under authed Account.
+     * Add Game under authed Account. Respond with added Game.
      */
     @RequestMapping(method = RequestMethod.POST, value = "/games")
     ResponseEntity<?> addGame(@AuthenticationPrincipal Principal principal, @RequestBody Game game) {

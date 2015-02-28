@@ -1,6 +1,7 @@
 package com.fullplate.hsgroove.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -13,8 +14,10 @@ public class Account {
     @GeneratedValue
     private Long id;
 
+    @Column(nullable = false)
     public String username;
 
+    @Column(nullable = false)
     @JsonIgnore
     public String password;
 
@@ -51,6 +54,7 @@ public class Account {
         return username;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -65,6 +69,11 @@ public class Account {
 
     public Set<Game> getGames() {
         return games;
+    }
+
+    @JsonProperty
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }
