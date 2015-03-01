@@ -1,6 +1,7 @@
 body {
     font-family: "Arial";
     background-color: #779ECB;
+    // FFB48C, FFE58C
 }
 
 h2 {
@@ -30,17 +31,17 @@ h3 {
 
 #nav {
     list-style-type: none;
-    margin: 0px 0px 0px 35px;
+    margin: 0px 0px 0px 30px;
     padding: 0;
 }
 
 #nav li {
     display: inline;
-    margin-right: 50px;
+    margin-right: 35px;
 }
 
 #nav a {
-    font-size: 150%;
+    font-size: 140%;
     color: #151515;
     text-decoration: none;
 }
