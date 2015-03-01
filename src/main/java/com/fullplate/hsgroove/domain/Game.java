@@ -16,7 +16,7 @@ public class Game {
     private Account account;
 
     @Column(nullable = false)
-    public Long timestamp; // TODO: can probably add this automagically
+    public Long timestamp;
 
     @ManyToOne
     public Season season;

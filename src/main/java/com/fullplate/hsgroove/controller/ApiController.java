@@ -1,24 +1,23 @@
 package com.fullplate.hsgroove.controller;
 
 import com.fullplate.hsgroove.domain.*;
-import com.fullplate.hsgroove.exception.AccessDeniedException;
 import com.fullplate.hsgroove.exception.GenericNotFoundException;
 import com.fullplate.hsgroove.exception.UserAlreadyExistsException;
 import com.fullplate.hsgroove.exception.UserNotFoundException;
-import jdk.nashorn.internal.ir.RuntimeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.util.Collection;
 
 @RestController
-//@PreAuthorize("hasAuthority('USER')")
 @RequestMapping("/api")
 public class ApiController {
 
