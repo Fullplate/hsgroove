@@ -8,7 +8,8 @@ var app = {
 
         this.currData = {
             "decks": [],
-            "matches": []
+            "matches": [],
+            "victoryRecord": [0, 0] // wins, losses
         };
 
         this.domain = {
@@ -270,7 +271,6 @@ var app = {
                 return;
             }
 
-
             for (var i = 0; i < res.length; i++) {
                 log(res[i]);
 
@@ -285,7 +285,7 @@ var app = {
         });
     },
 
-    // GET /api/matches and populate html
+    // GET /api/games and populate html
     doGetMatches: function(app) {
         log("doGetMatches");
 
@@ -338,9 +338,53 @@ var app = {
         });
     },
 
-    // GET /api/statistics and populate html
-    doGetStatistics: function() {
+    // GET /api/games and calculate basic statistics
+    // takes onDone callback so certain ui updates can block on results
+    // TODO: GET /api/statistics when backend is complete
+    calculateStatistics: function(app, onDone) {
+        log("calculateStatistics");
+
+        var app = app || this[0];
+
+        if (!app.appStatus.authed) {
+            log("doGetMatches failure (not authed)")
+            return;
+        }
+
+        // fetch, calculate and store won/lost games
+        var record = [0, 0]; // won/lost
+        $.get('/api/games', function(res) {
+            for (var i = 0; i < res.length; i++) {
+                if (res[i].victory) {
+                    record[0]++;
+                } else {
+                    record[1]++;
+                }
+            }
+            onDone(record);
+        });
+        app.currData.victoryRecord = record;
+    },
+
+    // populate html with results of calculateStatistics
+    doGetStatistics: function(app) {
         log("doGetStatistics");
+
+        var app = app || this[0]; // in case called via fetchBindings array
+
+        // get statistics from current match data
+        app.calculateStatistics(app, function(res) {
+            var wins = res[0];
+            var losses = res[1];
+            ((wins / (wins + losses)) * 100)
+            var winrate = (wins + losses != 0) ? Math.round((wins / (wins + losses)) * 100) : 0;
+
+            var statsDiv = $("#statisticsContainer");
+            statsDiv.empty();
+            statsDiv.append("<p>" + wins + " won, " + losses + " lost<p>");
+            statsDiv.append("<p>Total matches: " + (wins + losses) + "<p>");
+            statsDiv.append("<p>Winrate: " + winrate + "%<p>");
+        });
     },
 
     // POST /api/account/create
