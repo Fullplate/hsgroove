@@ -9,25 +9,25 @@
 <body>
 
 <!-- header image -->
-<img src="images/header3.png" alt="hsgroove header image" />
+<img id="header" src="images/header3.png" alt="hsgroove header image" />
 
 <!-- navigation links -->
 <div id="navContainer">
     <hr>
     <ul id="nav">
-        <li><a id="accountNav" href="#">Account</a></li>
-        <li><a id="decksNav" href="#">Decks</a></li>
-        <li><a id="matchesNav" href="#">Matches</a></li>
-        <li><a id="statisticsNav" href="#">Statistics</a></li>
+        <li><a id="accountLink" href="#">Account</a></li>
+        <li><a id="decksLink" href="#">Decks</a></li>
+        <li><a id="matchesLink" href="#">Matches</a></li>
+        <li><a id="statisticsLink" href="#">Statistics</a></li>
     </ul>
     <hr>
 </div>
 
 <div id="mainContainer">
     <!-- login/create account -->
-    <div id="account">
+    <div id="accountSection">
         <h2>Login or create account</h2>
-        <form id="loginForm">
+        <form id="login">
             <input id="username" type="text" placeholder="Username" required /><br>
             <input id="password" type="password" placeholder="Password" required /><br>
             <button id="loginButton" type="submit">Login</button>
@@ -36,30 +36,30 @@
     </div>
 
     <!-- view/create decks -->
-    <div id="decks">
-        <div id="createDeck">
+    <div id="decksSection">
+        <div id="createDeckContainer">
             <h2>Create deck</h2>
-            <form id="createDeckForm">
+            <form id="createDeck">
                 <input id="createDeckName" type="text" placeholder="Name" required /><br>
                 <select id="createDeckHeroClass"></select><br>
                 <input id="createDeckArchetype" type="text" placeholder="Archetype" list="createDeckArchetypeDl" /><br>
                 <datalist id="createDeckArchetypeDl"></datalist>
-                <textarea id="createDeckNotes" form="createDeckForm" rows="4" cols="40" placeholder="Notes"></textarea>
+                <textarea id="createDeckNotes" form="createDeck" rows="4" cols="40" placeholder="Notes"></textarea>
                 <br><button id="createDeckButton" type="submit">Create</button>
             </form>
         </div>
-        <div id="decklistContainer">
+        <div id="deckListContainer">
             <h2>Your decks</h2>
-            <div id="decklist">
+            <div id="deckList">
             </div>
         </div>
     </div>
 
     <!-- view/create matches -->
-    <div id="matches">
-        <div id="addMatch">
+    <div id="matchesSection">
+        <div id="addMatchContainer">
             <h2>Add match</h2>
-            <form id="addMatchForm">
+            <form id="addMatch">
                 <select id="addMatchDeck"></select>
                 <br><select id="addMatchRank"></select>
                 <br><select id="addMatchOppHeroClass"></select>
@@ -69,21 +69,21 @@
                 <input id="addMatchVictoryFalse" type="radio" name="victory"> Loss
                 <br><input id="addMatchOnCoinTrue" type="radio" name="onCoin" checked> Coin
                 <input id="addMatchOnCoinFalse" type="radio" name="onCoin"> No Coin
-                <br><textarea id="addMatchNotes" form="addMatchForm" rows="4" cols="40" placeholder="Notes"></textarea>
+                <br><textarea id="addMatchNotes" form="addMatch" rows="4" cols="40" placeholder="Notes"></textarea>
                 <br><button id="addMatchButton" type="submit">Add</button>
             </form>
         </div>
-        <div id="matchlistContainer">
+        <div id="matchListContainer">
             <h2>Your matches</h2>
-            <div id="matchlist">
+            <div id="matchList">
             </div>
         </div>
     </div>
 
     <!-- view statistics -->
-    <div id="statistics">
+    <div id="statisticsSection">
         <h2>Match statistics</h2>
-        <div id="statisticsContainer">
+        <div id="statistics">
         </div>
     </div>
 </div>

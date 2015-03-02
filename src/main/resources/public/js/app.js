@@ -46,8 +46,8 @@ var app = {
     // setup SPA navigation
     setupNavigation: function() {
         // fetch and store nav links and related divs
-        this.navOptions = [$("#accountNav"), $("#decksNav"), $("#matchesNav"), $("#statisticsNav")];
-        this.contentDivs = [$("#account"), $("#decks"), $("#matches"), $("#statistics")];
+        this.navLinks = [$("#accountLink"), $("#decksLink"), $("#matchesLink"), $("#statisticsLink")];
+        this.sections = [$("#accountSection"), $("#decksSection"), $("#matchesSection"), $("#statisticsSection")];
 
         // specify functions to be called upon content div loads
         var that = this;
@@ -69,28 +69,28 @@ var app = {
 
     // hide/show navigation links based on authed status
     updateAuthedNavigation: function() {
-        for (var i = 0; i < this.navOptions.length; i++) {
+        for (var i = 0; i < this.navLinks.length; i++) {
             if (i != this.preAuthIndex && !this.appStatus.authed) {
-                this.navOptions[i].hide();
+                this.navLinks[i].hide();
             } else {
-                this.navOptions[i].fadeIn(200);
+                this.navLinks[i].fadeIn(200);
             }
         }
     },
 
     // before user is authed, show specific div only
     showPreAuthContent: function() {
-        this.contentDivs[this.preAuthIndex].show();
-        this.contentDivs[this.preAuthIndex].siblings().hide();
+        this.sections[this.preAuthIndex].show();
+        this.sections[this.preAuthIndex].siblings().hide();
     },
 
     // bind nav links to related divs and call fetch data methods appropriately
     bindNavigation: function() {
         var that = this;
-        for (var i = 0; i < this.navOptions.length; i++) {
+        for (var i = 0; i < this.navLinks.length; i++) {
             (function(i) {
-                that.navOptions[i].click(function(e) {
-                    that.contentDivs[i].fadeIn(100).siblings().hide();
+                that.navLinks[i].click(function(e) {
+                    that.sections[i].fadeIn(100).siblings().hide();
                     that.fetchBindings[i + 1]();
                     that.populateInputBindings[i + 1]();
                 });
@@ -264,10 +264,10 @@ var app = {
             res = res.reverse(); // display newer results first
             app.currData.decks = res; // store results
 
-            var decklist = $("#decklist");
-            decklist.empty();
+            var deckList = $("#deckList");
+            deckList.empty();
             if (res.length === 0) {
-                decklist.append("<p>No decks found, try adding a deck!</p>");
+                deckList.append("<p>No decks found, try adding a deck!</p>");
                 return;
             }
 
@@ -280,7 +280,7 @@ var app = {
                 if (res[i].notes) {
                     deckString += "<p>Notes: " + res[i].notes + "</p>";
                 }
-                decklist.append("<div id='deck'>" + deckString + "</div><br>");
+                deckList.append("<div id='deck'>" + deckString + "</div><br>");
             }
         });
     },
@@ -302,10 +302,10 @@ var app = {
             res = res.reverse(); // display newer results first
             app.currData.matches = res; // store results
 
-            var matchlist = $("#matchlist");
-            matchlist.empty();
+            var matchList = $("#matchList");
+            matchList.empty();
             if (res.length === 0) {
-                matchlist.append("<p>No matches found, try adding a match!</p>");
+                matchList.append("<p>No matches found, try adding a match!</p>");
                 return;
             }
 
@@ -316,7 +316,7 @@ var app = {
                 // display season headers
                 var matchSeason = res[i].season.displayName;
                 if (matchSeason !== currentSeason) {
-                    matchlist.append("<h3>" + matchSeason + "</h3>");
+                    matchList.append("<h3>" + matchSeason + "</h3>");
                     currentSeason = matchSeason;
                 }
 
@@ -333,7 +333,7 @@ var app = {
                 if (res[i].notes) {
                     matchString += "<p>Notes: " + res[i].notes + "</p>";
                 }
-                matchlist.append("<div id='match'>" + matchString + "</div><br>");
+                matchList.append("<div id='match'>" + matchString + "</div><br>");
             }
         });
     },
@@ -379,11 +379,11 @@ var app = {
             ((wins / (wins + losses)) * 100)
             var winrate = (wins + losses != 0) ? Math.round((wins / (wins + losses)) * 100) : 0;
 
-            var statsDiv = $("#statisticsContainer");
-            statsDiv.empty();
-            statsDiv.append("<p>" + wins + " won, " + losses + " lost<p>");
-            statsDiv.append("<p>Total matches: " + (wins + losses) + "<p>");
-            statsDiv.append("<p>Winrate: " + winrate + "%<p>");
+            var stats = $("#statistics");
+            stats.empty();
+            stats.append("<p>" + wins + " won, " + losses + " lost<p>");
+            stats.append("<p>Total matches: " + (wins + losses) + "<p>");
+            stats.append("<p>Winrate: " + winrate + "%<p>");
         });
     },
 
@@ -453,9 +453,9 @@ var app = {
             function(res) {
                 log("doCreateDeck success: " + res);
                 // clear input fields
-                $("#createDeckForm")[0].reset();
+                $("#createDeck")[0].reset();
 
-                // fetch decklist again
+                // fetch deckList again
                 that.doGetDecks(that);
             },
             function(res) {
@@ -513,9 +513,9 @@ var app = {
             function(res) {
                 log("doAddMatch success: " + res);
                 // clear input fields
-                $("#addMatchForm")[0].reset();
+                $("#addMatch")[0].reset();
 
-                // fetch matchlist again
+                // fetch matchList again
                 that.doGetMatches(that);
             },
             function(res) {
