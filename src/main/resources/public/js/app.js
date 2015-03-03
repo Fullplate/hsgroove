@@ -275,12 +275,10 @@ var app = {
                 log(res[i]);
 
                 var deckString = "";
-                deckString += "<img src='" + app.assets.heroImages[res[i].heroClass].src + "' />";
-                deckString += "<span>" + res[i].name + " - " + res[i].archetype.displayName + "</span>"
-                if (res[i].notes) {
-                    deckString += "<p>Notes: " + res[i].notes + "</p>";
-                }
-                deckList.append("<div id='deck'>" + deckString + "</div><br>");
+                deckString += "<img class='deckImg' src='" + app.assets.heroImages[res[i].heroClass].src + "' />";
+                deckString += "<p class='deckName'>\"" + res[i].name + "\"</p>"
+                deckString += "<p class='deckArchetype'>" + res[i].archetype.displayName + "</p>";
+                deckList.append("<div class='deck'>" + deckString + "</div>");
             }
         });
     },

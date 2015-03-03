@@ -50,10 +50,48 @@ h3 {
     color: white;
 }
 
+/* forms */
 input {
     margin-bottom: 8px;
 }
 
 select {
     margin-bottom: 8px;
+}
+
+/* decks */
+#deckList {
+    overflow: hidden;
+}
+
+.deck {
+    float: left;
+    margin: 0px 30px 30px 0px;
+    padding-bottom: 15px;
+    background-color: white;
+}
+
+.deckImg {
+    padding: 20px 30px 20px 30px;
+}
+
+.deck p {
+    color: #151515;
+    text-align: center;
+    padding: 0px 10px 5px 10px;
+    margin: 0px;
+}
+
+.deckArchetype {
+    font-style: italic;
+}
+
+/* matches */
+.match {
+    background-color: white;
+}
+
+/* statistics */
+#statistics {
+    background-color: white;
 }
