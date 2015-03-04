@@ -8,19 +8,27 @@
 </head>
 <body>
 
-<!-- header image -->
-<img id="header" src="images/header3.png" alt="hsgroove header image" />
+<!-- header image/nav bar/info bar container -->
+<div id="headerContainer">
+    <!-- header image -->
+    <img id="header" src="images/header3.png" alt="hsgroove header image" />
 
-<!-- navigation links -->
-<div id="navContainer">
-    <hr>
-    <ul id="nav">
-        <li><a id="accountLink" href="#">Account</a></li>
-        <li><a id="decksLink" href="#">Decks</a></li>
-        <li><a id="matchesLink" href="#">Matches</a></li>
-        <li><a id="statisticsLink" href="#">Statistics</a></li>
-    </ul>
-    <hr>
+    <!-- navigation links -->
+    <div id="navContainer">
+        <ul id="nav">
+            <li><a id="accountLink" href="#">Account</a></li>
+            <li><a id="decksLink" href="#">Decks</a></li>
+            <li><a id="matchesLink" href="#">Matches</a></li>
+            <li><a id="statisticsLink" href="#">Statistics</a></li>
+        </ul>
+    </div>
+
+    <!-- info bar -->
+    <div id="infoContainer">
+        <span id="usernameDisplay"></span>
+        <span id="logout"><a id="logoutLink" href="#">(logout)</a></span>
+        <span id="rankDisplay"></span>
+    </div>
 </div>
 
 <div id="mainContainer">
@@ -44,7 +52,7 @@
                 <select id="createDeckHeroClass"></select><br>
                 <input id="createDeckArchetype" type="text" placeholder="Archetype" list="createDeckArchetypeDl" /><br>
                 <datalist id="createDeckArchetypeDl"></datalist>
-                <textarea id="createDeckNotes" form="createDeck" rows="4" cols="40" placeholder="Notes"></textarea>
+                <textarea id="createDeckNotes" form="createDeck" rows="3" cols="30" placeholder="Notes"></textarea>
                 <br><button id="createDeckButton" type="submit">Create</button>
             </form>
         </div>
@@ -69,7 +77,7 @@
                 <input id="addMatchVictoryFalse" type="radio" name="victory"> Loss
                 <br><input id="addMatchOnCoinTrue" type="radio" name="onCoin" checked> Coin
                 <input id="addMatchOnCoinFalse" type="radio" name="onCoin"> No Coin
-                <br><textarea id="addMatchNotes" form="addMatch" rows="4" cols="40" placeholder="Notes"></textarea>
+                <br><textarea id="addMatchNotes" form="addMatch" rows="3" cols="30" placeholder="Notes"></textarea>
                 <br><button id="addMatchButton" type="submit">Add</button>
             </form>
         </div>

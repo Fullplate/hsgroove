@@ -3,7 +3,8 @@ var app = {
         log("hsgroove initiated");
 
         this.appStatus = {
-            "authed": false
+            "authed": false,
+            "authedUser": ""
         };
 
         this.currData = {
@@ -51,8 +52,8 @@ var app = {
 
         // specify functions to be called upon content div loads
         var that = this;
-        this.fetchBindings = [that, function(){}, this.doGetDecks, this.doGetMatches, this.doGetStatistics];
-        this.populateInputBindings = [that, function(){}, this.populateDeckInput, this.populateMatchInput, function(){}]
+        this.buildInputBindings = [that, function(){}, this.populateDeckInput, this.populateMatchInput, function(){}];
+        this.buildContentBindings = [that, function(){}, this.buildDeckList, this.buildMatchList, this.buildStatistics];
 
         // set the pre-authorized nav link/related div index
         this.preAuthIndex = 0;
@@ -63,8 +64,11 @@ var app = {
         // show pre-authorised div
         this.showPreAuthContent();
 
-        // bind links to divs
+        // bind links to divs/actions
         this.bindNavigation();
+
+        // bind logout link
+        this.bindLogoutLink($("#logoutLink"));
     },
 
     // hide/show navigation links based on authed status
@@ -90,12 +94,20 @@ var app = {
         for (var i = 0; i < this.navLinks.length; i++) {
             (function(i) {
                 that.navLinks[i].click(function(e) {
-                    that.sections[i].fadeIn(100).siblings().hide();
-                    that.fetchBindings[i + 1]();
-                    that.populateInputBindings[i + 1]();
+                    that.sections[i].fadeIn(200).siblings().hide();
+                    that.buildInputBindings[i + 1]();
+                    that.buildContentBindings[i + 1]();
                 });
             })(i);
         }
+    },
+
+    // bind supplied link to logging out functionality
+    bindLogoutLink: function(link) {
+        var that = this;
+        link.click(function(e) {
+            that.doLogout();
+        });
     },
 
     // setup bindings between form submits/buttons and AJAXing methods
@@ -117,6 +129,27 @@ var app = {
             that.doAddMatch();
             e.preventDefault();
         });
+    },
+
+    // populate/show or clear/hide info bar based on auth status
+    updateInfoBar: function() {
+        log("updateInfoBar: " + this.appStatus.authed);
+
+        var container = $("#infoContainer");
+        var username = $("#usernameDisplay");
+        var rank = $("#rankDisplay");
+
+        if (this.appStatus.authed) {
+            username.text(this.appStatus.authedUser);
+            if (this.currData.matches.length > 0) {
+                rank.text("Rank: " + this.currData.matches[0].rank);
+            }
+            container.slideDown();
+        } else {
+            username.text = "";
+            rank.text = "";
+            container.slideUp();
+        }
     },
 
     // populate input form for Decks

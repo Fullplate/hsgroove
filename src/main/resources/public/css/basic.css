@@ -1,14 +1,30 @@
 body {
-    font-family: "Arial";
+    font-family: Helvetica, Arial;
     background-color: #779ECB;
-    // FFB48C, FFE58C
+}
+
+#headerContainer {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+#header {
+    display: block;
+    margin: 10px auto;
+}
+
+#mainContainer {
+    background-color:rgba(192,192,192,0.5);
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0px 20px 20px 20px;
 }
 
 h2 {
     font-style: italic;
     font-size: 160%;
     color: #151515;
-    padding: 20px 0px 20px 0px;
+    padding: 20px 0px;
     margin: 0;
 }
 
@@ -16,22 +32,20 @@ h3 {
     font-style: italic;
     font-size: 130%;
     color: #151515;
-    padding: 10px 0px 10px 0px;
+    padding: 10px 0px;
     margin: 0;
 }
 
-#mainContainer {
-    background-color:rgba(192,192,192,0.5);
-    padding: 0px 20px 20px 20px;
-}
-
-#navSection {
-    margin-bottom: 20px;
+/* navigation */
+#navContainer {
+    background-color: #FFB48C;
+    padding: 10px 0px 10px 30px;
+    margin: 5px 0px;
 }
 
 #nav {
     list-style-type: none;
-    margin: 0px 0px 0px 30px;
+    margin: 0;
     padding: 0;
 }
 
@@ -41,12 +55,45 @@ h3 {
 }
 
 #nav a {
-    font-size: 140%;
+    font-size: 160%;
     color: #151515;
+    font-family: monospace;
     text-decoration: none;
 }
 
 #nav a:hover {
+    color: white;
+}
+
+/* info bar */
+#infoContainer {
+    display: none;
+    background-color: #FFE58C;
+    padding: 10px 0px 10px 30px;
+    margin-bottom: 5px;
+}
+
+#infoContainer span {
+    font-family: monospace;
+    font-size: 160%;
+    color: #151515;
+}
+
+#usernameDisplay {
+    margin-right: 5px;
+}
+
+#logout {
+    margin-right: 35px;
+}
+
+#logout a {
+    text-decoration: none;
+    font-size: 80%;
+    color: #151515;
+}
+
+#logout a:hover {
     color: white;
 }
 
@@ -94,4 +141,5 @@ select {
 /* statistics */
 #statistics {
     background-color: white;
+    padding: 10px;
 }
