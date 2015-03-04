@@ -217,6 +217,204 @@ var app = {
         }
     },
 
+    // called when authed status changes
+    updateAuthedStatus: function(authed, username, logMsg) {
+        log("updateAuthedStatus: "+logMsg);
+
+        // set appStatus
+        this.appStatus.authed = authed;
+        this.appStatus.authedUser = username;
+
+        // if logging in, fetch/store deck/match data
+        if (authed) {
+            var that = this;
+            this.fetchDecks(function() {
+                that.fetchMatches(function() {
+                    // show info bar, navigation options once all data is loaded
+                    that.updateInfoBar();
+                    that.updateAuthedNavigation();
+                    // clear password field
+                    $("#password").val("");
+                });
+            });
+        } else {
+            // if logging out, remove non-Account navigation/content and the info bar
+            this.updateAuthedNavigation();
+            this.updateInfoBar();
+            this.showPreAuthContent();
+        }
+    },
+
+    // login to API with basic authentication
+    doLogin: function() {
+        log("doLogin");
+
+        var that = this;
+
+        var username = $("#username").val();
+        var password = $("#password").val();
+        if (!(username && password)) {
+            this.updateAuthedStatus(false, "", "doLogin failure (missing username/password)")
+            return;
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: '/api/account',
+            dataType: 'json',
+            headers: {
+                'Authorization': 'Basic ' + btoa(username + ":" + password)
+            },
+            success: function(res) {
+                if (res.username === username) {
+                    that.updateAuthedStatus(true, username, "doLogin success");
+                } else {
+                    that.updateAuthedStatus(false, "", "doLogin failure (server error)");
+                }
+            },
+            error: function(res) {
+                that.updateAuthedStatus(false, "", "doLogin failure (check credentials)");
+            }
+        });
+    },
+
+    // coordinate logging out
+    // TODO: use a proper method of logging out eg invalidating cookies/session etc.
+    doLogout: function() {
+        this.updateAuthedStatus(false, "", "user logged out");
+    },
+
+    // fetch and store all decks, newest-to-oldest. Call onDone when complete.
+    fetchDecks: function(onDone) {
+        if (!app.appStatus.authed) {
+            log("fetchDecks failure (not authed)")
+            onDone();
+        }
+
+        var that = this;
+        $.get('/api/decks', function(res) {
+            if (res && res.length > 0 ) {
+                that.currData.decks = res.reverse();
+            }
+            onDone();
+        });
+    },
+
+    // fetch and store all matches, newest-to-oldest. Update statistics. Call onDone when complete.
+    fetchMatches: function(onDone) {
+        if (!app.appStatus.authed) {
+            log("fetchMatches failure (not authed)")
+            onDone();
+        }
+
+        var that = this;
+        $.get('/api/games', function(res) {
+            if (res && res.length > 0) {
+                that.currData.matches = res.reverse();
+            }
+            that.calculateStatistics();
+            onDone();
+        });
+    },
+
+    // calculate basic statistics based off fetched games, and store in currData.victoryRecord
+    calculateStatistics: function() {
+        log("calculateStatistics");
+
+        var matches = app.currData.matches;
+        var record = [0, 0]; // won/lost
+        for (var i = 0; i < matches.length; i++) {
+            if (matches[i].victory) {
+                record[0]++;
+            } else {
+                record[1]++;
+            }
+        }
+        app.currData.victoryRecord = record;
+    },
+
+    // populate deckList html
+    // TODO: hover on deck for notes
+    buildDeckList: function(app) {
+        log("buildDeckList");
+
+        var app = app || this[0]; // in case called via fetchBindings array
+
+        var deckList = $("#deckList");
+        deckList.empty();
+
+        var decks = app.currData.decks;
+        if (decks.length > 0) {
+            for (var i = 0; i < decks.length; i++) {
+                var deckString = "";
+                deckString += "<img class='deckImg' src='" + app.assets.heroImages[decks[i].heroClass].src + "' />";
+                deckString += "<p class='deckName'>\"" + decks[i].name + "\"</p>"
+                deckString += "<p class='deckArchetype'>" + decks[i].archetype.displayName + "</p>";
+                deckList.append("<div class='deck'>" + deckString + "</div>");
+            }
+        } else {
+            deckList.append("<p>No decks found, try adding a deck!</p>");
+        }
+    },
+
+    // populate matchList html
+    buildMatchList: function(app) {
+        log("buildMatchList");
+
+        var app = app || this[0]; // in case called via fetchBindings array
+
+        var matchList = $("#matchList");
+        matchList.empty();
+
+        var matches = app.currData.matches;
+        if (matches.length > 0) {
+            var currentSeason = "";
+            for (var i = 0; i < matches.length; i++) {
+                // display season headers
+                var matchSeason = matches[i].season.displayName;
+                if (matchSeason !== currentSeason) {
+                    matchList.append("<h3>" + matchSeason + "</h3>");
+                    currentSeason = matchSeason;
+                }
+
+                // add div containing match details
+                var matchString = "";
+                matchString += "<img src='" + app.assets.heroImages[matches[i].deck.heroClass].src + "' />";
+                matchString += "<span> VS </span>";
+                matchString += "<img src='" + app.assets.heroImages[matches[i].oppHeroClass].src + "' />";
+                matchString += "<span> @ Rank: " + matches[i].rank + ", " + ((matches[i].victory) ? "WIN" : "LOSS") + "</span>";
+                matchString += "<p>" + matches[i].deck.name +
+                        ((matches[i].deck.archetype) ? " (" + matches[i].deck.archetype.displayName + " )" : "") +
+                        " VS " + ((matches[i].oppArchetype) ? matches[i].oppArchetype.displayName : " opponent") +
+                        ((matches[i].onCoin) ? " (coin)" : " (no coin)") + "</p>";
+                if (matches[i].notes) {
+                    matchString += "<p>Notes: " + matches[i].notes + "</p>";
+                }
+                matchList.append("<div class='match'>" + matchString + "</div><br>");
+            }
+        } else {
+            matchList.append("<p>No matches found, try adding a match!</p>");
+        }
+    },
+
+    // populate statistics html
+    buildStatistics: function(app) {
+        log("buildStatistics");
+
+        var app = app || this[0]; // in case called via fetchBindings array
+
+        var victoryRecord = app.currData.victoryRecord;
+        var wins = victoryRecord[0];
+        var losses = victoryRecord[1];
+        var winrate = (wins + losses != 0) ? Math.round((wins / (wins + losses)) * 100) : 0;
+
+        var stats = $("#statistics");
+        stats.empty();
+        stats.append("<p>" + wins + " won, " + losses + " lost<p>");
+        stats.append("<p>Total matches: " + (wins + losses) + "<p>");
+        stats.append("<p>Winrate: " + winrate + "%<p>");
+    },
+
     // convert obj to JSON and POST to url via AJAX request
     postJson: function(url, obj, success, failure) {
         log("postJson: "+JSON.stringify(obj, null, 4));
@@ -239,185 +437,6 @@ var app = {
         });
     },
 
-    // called when authed status changes
-    updateAuthedStatus: function(authed, logMsg) {
-        log("updateAuthedStatus: "+logMsg);
-        this.appStatus.authed = authed;
-        this.updateAuthedNavigation();
-        $("#password").val("");
-    },
-
-    // login to API with basic authentication
-    doLogin: function() {
-        log("doLogin");
-
-        var that = this;
-
-        var username = $("#username").val();
-        var password = $("#password").val();
-        if (!(username && password)) {
-            this.updateAuthedStatus(false, "doLogin failure (missing username/password)")
-            return;
-        }
-
-        $.ajax({
-            type: 'GET',
-            url: '/api/account',
-            dataType: 'json',
-            headers: {
-                'Authorization': 'Basic ' + btoa(username + ":" + password)
-            },
-            success: function(res) {
-                if (res.username === username) {
-                    that.updateAuthedStatus(true, "doLogin success");
-                } else {
-                    that.updateAuthedStatus(false, "doLogin failure (server error)");
-                }
-            },
-            error: function(res) {
-                that.updateAuthedStatus(false, "doLogin failure (check credentials)");
-            }
-        });
-    },
-
-    // GET /api/decks and populate html
-    doGetDecks: function(app) {
-        log("doGetDecks");
-
-        var app = app || this[0]; // in case called via fetchBindings array
-
-        if (!app.appStatus.authed) {
-            log("doGetDecks failure (not authed)")
-            return;
-        }
-
-        $.get('/api/decks', function(res) {
-            log(res);
-
-            res = res.reverse(); // display newer results first
-            app.currData.decks = res; // store results
-
-            var deckList = $("#deckList");
-            deckList.empty();
-            if (res.length === 0) {
-                deckList.append("<p>No decks found, try adding a deck!</p>");
-                return;
-            }
-
-            for (var i = 0; i < res.length; i++) {
-                log(res[i]);
-
-                var deckString = "";
-                deckString += "<img class='deckImg' src='" + app.assets.heroImages[res[i].heroClass].src + "' />";
-                deckString += "<p class='deckName'>\"" + res[i].name + "\"</p>"
-                deckString += "<p class='deckArchetype'>" + res[i].archetype.displayName + "</p>";
-                deckList.append("<div class='deck'>" + deckString + "</div>");
-            }
-        });
-    },
-
-    // GET /api/games and populate html
-    doGetMatches: function(app) {
-        log("doGetMatches");
-
-        var app = app || this[0]; // in case called via fetchBindings array
-
-        if (!app.appStatus.authed) {
-            log("doGetMatches failure (not authed)")
-            return;
-        }
-
-        $.get('/api/games', function(res) {
-            log(res);
-
-            res = res.reverse(); // display newer results first
-            app.currData.matches = res; // store results
-
-            var matchList = $("#matchList");
-            matchList.empty();
-            if (res.length === 0) {
-                matchList.append("<p>No matches found, try adding a match!</p>");
-                return;
-            }
-
-            var currentSeason = "";
-            for (var i = 0; i < res.length; i++) {
-                log(res[i]);
-
-                // display season headers
-                var matchSeason = res[i].season.displayName;
-                if (matchSeason !== currentSeason) {
-                    matchList.append("<h3>" + matchSeason + "</h3>");
-                    currentSeason = matchSeason;
-                }
-
-                // add div containing match details
-                var matchString = "";
-                matchString += "<img src='" + app.assets.heroImages[res[i].deck.heroClass].src + "' />";
-                matchString += "<span> VS </span>";
-                matchString += "<img src='" + app.assets.heroImages[res[i].oppHeroClass].src + "' />";
-                matchString += "<span> @ Rank: " + res[i].rank + ", " + ((res[i].victory) ? "WIN" : "LOSS") + "</span>";
-                matchString += "<p>" + res[i].deck.name +
-                        ((res[i].deck.archetype) ? " (" + res[i].deck.archetype.displayName + " )" : "") +
-                        " VS " + ((res[i].oppArchetype) ? res[i].oppArchetype.displayName : " opponent") +
-                        ((res[i].onCoin) ? " (coin)" : " (no coin)") + "</p>";
-                if (res[i].notes) {
-                    matchString += "<p>Notes: " + res[i].notes + "</p>";
-                }
-                matchList.append("<div id='match'>" + matchString + "</div><br>");
-            }
-        });
-    },
-
-    // GET /api/games and calculate basic statistics
-    // takes onDone callback so certain ui updates can block on results
-    // TODO: GET /api/statistics when backend is complete
-    calculateStatistics: function(app, onDone) {
-        log("calculateStatistics");
-
-        var app = app || this[0];
-
-        if (!app.appStatus.authed) {
-            log("doGetMatches failure (not authed)")
-            return;
-        }
-
-        // fetch, calculate and store won/lost games
-        var record = [0, 0]; // won/lost
-        $.get('/api/games', function(res) {
-            for (var i = 0; i < res.length; i++) {
-                if (res[i].victory) {
-                    record[0]++;
-                } else {
-                    record[1]++;
-                }
-            }
-            onDone(record);
-        });
-        app.currData.victoryRecord = record;
-    },
-
-    // populate html with results of calculateStatistics
-    doGetStatistics: function(app) {
-        log("doGetStatistics");
-
-        var app = app || this[0]; // in case called via fetchBindings array
-
-        // get statistics from current match data
-        app.calculateStatistics(app, function(res) {
-            var wins = res[0];
-            var losses = res[1];
-            ((wins / (wins + losses)) * 100)
-            var winrate = (wins + losses != 0) ? Math.round((wins / (wins + losses)) * 100) : 0;
-
-            var stats = $("#statistics");
-            stats.empty();
-            stats.append("<p>" + wins + " won, " + losses + " lost<p>");
-            stats.append("<p>Total matches: " + (wins + losses) + "<p>");
-            stats.append("<p>Winrate: " + winrate + "%<p>");
-        });
-    },
-
     // POST /api/account/create
     doCreateAccount: function() {
         log("doCreateAccount");
@@ -425,17 +444,16 @@ var app = {
         var username = $("#username").val();
         var password = $("#password").val();
         if (!(username && password)) {
-            this.updateAuthedStatus(false, "doCreateAccount failure (missing username/password)")
+            this.updateAuthedStatus(false, "", "doCreateAccount failure (missing username/password)")
             return;
         }
 
-        var accountObj = {
-            "username": username,
-            "password": password
-        };
-
         var that = this;
-        this.postJson('/api/account/create', accountObj,
+        this.postJson('/api/account/create',
+            {
+                "username": username,
+                "password": password
+            },
             function() {
                 log("doCreateAccount success");
                 alert("Account created, now logging in...");
@@ -447,7 +465,7 @@ var app = {
         );
     },
 
-    // POST /api/decks and update html
+    // POST /api/decks and update stored data
     doCreateDeck: function() {
         log("doCreateDeck");
 
@@ -482,20 +500,22 @@ var app = {
         var that = this;
         this.postJson('/api/decks', deckObj,
             function(res) {
-                log("doCreateDeck success: " + res);
+                log("doCreateDeck success: " + JSON.stringify(res, null, 4));
+
                 // clear input fields
                 $("#createDeck")[0].reset();
 
-                // fetch deckList again
-                that.doGetDecks(that);
+                // add new deck to start of currData.decks, and rebuild html
+                that.currData.decks.unshift(res);
+                that.buildDeckList(that);
             },
             function(res) {
-                log("doCreateDeck failure: " + res);
+                log("doCreateDeck failure: " + JSON.stringify(res, null, 4));
             }
         );
     },
 
-    // POST /api/games and update html
+    // POST /api/games and update stored data
     doAddMatch: function() {
         log("doAddMatch");
 
@@ -542,15 +562,18 @@ var app = {
         var that = this;
         this.postJson('/api/games', matchObj,
             function(res) {
-                log("doAddMatch success: " + res);
+                log("doAddMatch success: " + JSON.stringify(res, null, 4));
+
                 // clear input fields
                 $("#addMatch")[0].reset();
 
-                // fetch matchList again
-                that.doGetMatches(that);
+                // add new match to start of currData.matches, recalculate statistics and rebuild html
+                that.currData.matches.unshift(res);
+                that.calculateStatistics();
+                that.buildMatchList(that);
             },
             function(res) {
-                log("doAddMatch failure: " + res);
+                log("doAddMatch failure: " + JSON.stringify(res, null, 4));
             }
         );
     }
