@@ -3,6 +3,7 @@ body {
     background-color: #779ECB;
 }
 
+/* main structure */
 #headerContainer {
     max-width: 960px;
     margin: 0 auto;
@@ -14,12 +15,17 @@ body {
 }
 
 #mainContainer {
-    background-color:rgba(192,192,192,0.5);
     max-width: 920px;
+    background-color:rgba(192,192,192,0.5);
     margin: 0 auto;
     padding: 0px 20px 20px 20px;
 }
 
+.page {
+    display: none;
+}
+
+/* headers */
 h2 {
     font-style: italic;
     font-size: 160%;
