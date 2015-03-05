@@ -25,6 +25,10 @@ body {
     display: none;
 }
 
+.link {
+    display: none;
+}
+
 /* headers */
 h2 {
     font-style: italic;
