@@ -1,6 +1,7 @@
 body {
     font-family: Helvetica, Arial;
-    background-color: #779ECB;
+    /*background-color: #779ECB;*/
+    background-color: #FDFDFD;
 }
 
 /* main structure */
@@ -72,7 +73,7 @@ h3 {
 }
 
 #nav a:hover {
-    color: white;
+    color: #FDFDFD;
 }
 
 /* info bar */
@@ -93,10 +94,6 @@ h3 {
     margin-right: 5px;
 }
 
-#logout {
-    margin-right: 35px;
-}
-
 #logout a {
     text-decoration: none;
     font-size: 80%;
@@ -104,7 +101,7 @@ h3 {
 }
 
 #logout a:hover {
-    color: white;
+    color: #FDFDFD;
 }
 
 /* forms */
@@ -118,14 +115,15 @@ select {
 
 /* decks */
 #deckList {
-    overflow: hidden;
+    max-height: 370px;
+    overflow-y: auto;
 }
 
 .deck {
     float: left;
     margin: 0px 30px 30px 0px;
     padding-bottom: 15px;
-    background-color: white;
+    background-color: #FDFDFD;
 }
 
 .deckImg {
@@ -144,12 +142,60 @@ select {
 }
 
 /* matches */
+#matchList {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
 .match {
-    background-color: white;
+    background-color: #FDFDFD;
+    padding: 0px 10px;
+    margin-bottom: 5px;
+}
+
+.matchSeason {
+    background-color: #FDFDFD;
+    padding: 10px;
+    margin-bottom: 5px;
+}
+
+.matchVictory {
+
+}
+
+.matchRank {
+    font-size: 400%;
+    padding: 0;
+    margin: 0;
+}
+
+.matchCoin {
+
+}
+
+.matchHero {
+
+}
+
+.matchVersus {
+
+}
+
+.matchOppHeroImg {
+
+}
+
+.matchArchetype {
+
+}
+
+.matchOppArchetype {
+
 }
 
 /* statistics */
 #statistics {
-    background-color: white;
+    background-color: #FDFDFD;
     padding: 10px;
+    margin: 0;
 }
