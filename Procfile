@@ -1,1 +1,1 @@
-web: java -jar target/*.jar
+web: java -Dserver.port=$PORT -jar target/hsgroove-0.1.0.jar
