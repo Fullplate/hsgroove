@@ -27,7 +27,8 @@ var app = {
     // load image assets into object
     loadAssets: function() {
         var assets = {
-            "heroImages": []
+            "heroImages": [],
+            "match": {}
         };
 
         var loadImage = function(filename) {
@@ -39,6 +40,12 @@ var app = {
         // load hero images
         for (var i = 0; i < this.domain.classes.length; i++) {
             assets.heroImages[i] = loadImage("hero/class_" + this.domain.classes[i] + ".png");
+        }
+
+        // load match assets
+        var matchAssets = ["coin", "nocoin", "tick", "cross", "vs"];
+        for (var i = 0; i < matchAssets.length; i++) {
+            assets.match[matchAssets[i]] = loadImage("match/" + matchAssets[i] + ".png");
         }
 
         return assets;
@@ -75,7 +82,7 @@ var app = {
     updateAuthedNavigation: function() {
         for (var i = 0; i < this.navLinks.length; i++) {
             if (i != this.preAuthIndex && !this.appStatus.authed) {
-                this.navLinks[i].hide();
+                this.navLinks[i].fadeOut(200);
             } else {
                 this.navLinks[i].fadeIn(200);
             }
@@ -137,17 +144,12 @@ var app = {
 
         var container = $("#infoContainer");
         var username = $("#usernameDisplay");
-        var rank = $("#rankDisplay");
 
         if (this.appStatus.authed) {
             username.text(this.appStatus.authedUser);
-            if (this.currData.matches.length > 0) {
-                rank.text("Rank: " + this.currData.matches[0].rank);
-            }
             container.slideDown();
         } else {
             username.text = "";
-            rank.text = "";
             container.slideUp();
         }
     },
@@ -358,6 +360,7 @@ var app = {
     },
 
     // populate matchList html
+    // TODO: hover on match for notes
     buildMatchList: function(app) {
         log("buildMatchList");
 
@@ -370,27 +373,37 @@ var app = {
         if (matches.length > 0) {
             var currentSeason = "";
             for (var i = 0; i < matches.length; i++) {
-                // display season headers
+                // display season header (season name and current/achieved rank in season)
                 var matchSeason = matches[i].season.displayName;
                 if (matchSeason !== currentSeason) {
-                    matchList.append("<h3>" + matchSeason + "</h3>");
+                    var rankString = " (Rank: " + ((matches[i].rank != 0) ? matches[i].rank : "Legend") + ")";
+                    matchList.append("<h3 class='matchSeason'>" + matchSeason + rankString + "</h3>");
                     currentSeason = matchSeason;
                 }
 
-                // add div containing match details
+                // get images based on match details
+                var victoryImg = app.assets.match[(matches[i].victory) ? "tick" : "cross"].src;
+                var coinImg = app.assets.match[(matches[i].onCoin) ? "coin" : "nocoin"].src;
+                var heroImg = app.assets.heroImages[matches[i].deck.heroClass].src;
+                var versusImg = app.assets.match["vs"].src;
+                var oppHeroImg = app.assets.heroImages[matches[i].oppHeroClass].src;
+
+                // get text strings
+                var rank = matches[i].rank;
+                var archetype = matches[i].deck.archetype.displayName;
+                var oppArchetype = matches[i].oppArchetype.displayName;
+
+                // add match div
                 var matchString = "";
-                matchString += "<img src='" + app.assets.heroImages[matches[i].deck.heroClass].src + "' />";
-                matchString += "<span> VS </span>";
-                matchString += "<img src='" + app.assets.heroImages[matches[i].oppHeroClass].src + "' />";
-                matchString += "<span> @ Rank: " + matches[i].rank + ", " + ((matches[i].victory) ? "WIN" : "LOSS") + "</span>";
-                matchString += "<p>" + matches[i].deck.name +
-                        ((matches[i].deck.archetype) ? " (" + matches[i].deck.archetype.displayName + " )" : "") +
-                        " VS " + ((matches[i].oppArchetype) ? matches[i].oppArchetype.displayName : " opponent") +
-                        ((matches[i].onCoin) ? " (coin)" : " (no coin)") + "</p>";
-                if (matches[i].notes) {
-                    matchString += "<p>Notes: " + matches[i].notes + "</p>";
-                }
-                matchList.append("<div class='match'>" + matchString + "</div><br>");
+                matchString += "<img class='matchVictory' src='" + victoryImg + "' />";
+                matchString += "<span class='matchRank'>" + rank + "</span>";
+                matchString += "<img class='matchCoin' src='" + coinImg + "' />";
+                matchString += "<img class='matchHero' src='" + heroImg + "' />";
+                matchString += "<img class='matchVersus' src='" + versusImg + "' />";
+                matchString += "<img class='matchOppHeroImg' src='" + oppHeroImg + "' />";
+                matchString += "<span class='matchArchetype'>" + archetype + "</span>";
+                matchString += "<span class='matchOppArchetype'>" + oppArchetype + "</span>";
+                matchList.append("<div class='match'>" + matchString + "</div>");
             }
         } else {
             matchList.append("<p>No matches found, try adding a match!</p>");
