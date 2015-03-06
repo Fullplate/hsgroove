@@ -26,5 +26,8 @@
         <module name="hsgroove" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="hsgroove" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
