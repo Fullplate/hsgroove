@@ -14,6 +14,18 @@
     <artifactId>hsgroove</artifactId>
     <version>0.1.0</version>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.2.1.RELEASE</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <packaging>war</packaging>
+
     <properties>
         <java.version>1.8</java.version>
     </properties>
@@ -49,17 +61,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.34</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <version>1.2.1.RELEASE</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
-
-    <!-- Package as an executable JAR -->
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>1.2.1.RELEASE</version>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
