@@ -24,6 +24,15 @@ var app = {
         this.setupAjaxBindings();
     },
 
+    // restore currData to it's initial empty state
+    clearCurrData: function() {
+        log("clearCurrData");
+
+        this.currData = [];
+        this.matches = [];
+        this.victoryRecord = [0, 0];
+    },
+
     // load image assets into object
     loadAssets: function() {
         var assets = {
@@ -240,10 +249,13 @@ var app = {
                 });
             });
         } else {
-            // if logging out, remove non-Account navigation/content and the info bar
+            // if logging out
+            // remove authed-required content
             this.updateAuthedNavigation();
             this.updateInfoBar();
             this.showPreAuthContent();
+            // clear stored data
+            this.clearCurrData();
         }
     },
 
