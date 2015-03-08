@@ -19,7 +19,7 @@ body {
     max-width: 920px;
     background-color:rgba(192,192,192,0.5);
     margin: 0 auto;
-    padding: 0px 20px 20px 20px;
+    padding: 0px 20px 20px 20px
 }
 
 .page {
@@ -28,6 +28,10 @@ body {
 
 .link {
     display: none;
+}
+
+p, span, a {
+    color: #151515;
 }
 
 /* headers */
@@ -67,7 +71,6 @@ h3 {
 
 #nav a {
     font-size: 160%;
-    color: #151515;
     font-family: monospace;
     text-decoration: none;
 }
@@ -87,7 +90,6 @@ h3 {
 #infoContainer span {
     font-family: monospace;
     font-size: 160%;
-    color: #151515;
 }
 
 #usernameDisplay {
@@ -97,7 +99,6 @@ h3 {
 #logout a {
     text-decoration: none;
     font-size: 80%;
-    color: #151515;
 }
 
 #logout a:hover {
@@ -131,7 +132,6 @@ select {
 }
 
 .deck p {
-    color: #151515;
     text-align: center;
     padding: 0px 10px 5px 10px;
     margin: 0px;
@@ -143,12 +143,13 @@ select {
 
 /* matches */
 #matchList {
-    max-height: 400px;
+    max-height: 490px;
     overflow-y: auto;
 }
 
 .match {
     background-color: #FDFDFD;
+    height: 68px; /* component image height + padding */
     padding: 0px 10px;
     margin-bottom: 5px;
 }
@@ -156,41 +157,33 @@ select {
 .matchSeason {
     background-color: #FDFDFD;
     padding: 10px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
-.matchVictory {
-
-}
-
-.matchRank {
-    font-size: 400%;
-    padding: 0;
+.matchElement {
+    padding: 5px;
     margin: 0;
 }
 
-.matchCoin {
-
+.matchRank {
+    font-size: 250%;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .matchHero {
-
+    margin-left: 20px;
+}
+.matchOppHero {
+    margin-right: 20px;
 }
 
-.matchVersus {
-
-}
-
-.matchOppHeroImg {
-
-}
-
-.matchArchetype {
-
-}
-
-.matchOppArchetype {
-
+.matchDescription {
+    font-size: 110%;
+    height: 50px;
+    font-style: italic;
+    word-wrap: break-word;
+    overflow: auto;
 }
 
 /* statistics */

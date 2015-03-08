@@ -407,14 +407,15 @@ var app = {
 
                 // add match div
                 var matchString = "";
-                matchString += "<img class='matchVictory' src='" + victoryImg + "' />";
-                matchString += "<span class='matchRank'>" + rank + "</span>";
-                matchString += "<img class='matchCoin' src='" + coinImg + "' />";
-                matchString += "<img class='matchHero' src='" + heroImg + "' />";
-                matchString += "<img class='matchVersus' src='" + versusImg + "' />";
-                matchString += "<img class='matchOppHeroImg' src='" + oppHeroImg + "' />";
-                matchString += "<span class='matchArchetype'>" + archetype + "</span>";
-                matchString += "<span class='matchOppArchetype'>" + oppArchetype + "</span>";
+                matchString += "<img class='matchElement matchVictory' src='" + victoryImg + "' />";
+                matchString += "<span class='matchElement matchRank'>" + rank + "</span>";
+                matchString += "<img class='matchElement matchCoin' src='" + coinImg + "' />";
+                matchString += "<img class='matchElement matchHero' src='" + heroImg + "' />";
+                matchString += "<img class='matchElement matchVersus' src='" + versusImg + "' />";
+                matchString += "<img class='matchElement matchOppHero' src='" + oppHeroImg + "' />";
+                matchString += "<span class='matchElement matchDescription'>" + archetype + " " +
+                        app.domain.classes[matches[i].deck.heroClass] + " vs " +
+                        oppArchetype + " " + app.domain.classes[matches[i].oppHeroClass] + "</span>"
                 matchList.append("<div class='match'>" + matchString + "</div>");
             }
         } else {
