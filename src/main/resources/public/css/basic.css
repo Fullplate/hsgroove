@@ -150,8 +150,14 @@ select {
 .match {
     background-color: #FDFDFD;
     height: 68px; /* component image height + padding */
-    padding: 0px 10px;
+    max-width: 920px;
+    line-height: 48px;
+    padding: 0;
     margin-bottom: 5px;
+}
+
+.match img {
+    vertical-align: middle;
 }
 
 .matchSeason {
@@ -165,8 +171,7 @@ select {
     margin: 0;
 }
 
-.matchRank {
-    font-size: 250%;
+.matchVictory {
     margin-left: 5px;
     margin-right: 5px;
 }
@@ -180,10 +185,7 @@ select {
 
 .matchDescription {
     font-size: 110%;
-    height: 50px;
     font-style: italic;
-    word-wrap: break-word;
-    overflow: auto;
 }
 
 /* statistics */

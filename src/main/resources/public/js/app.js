@@ -37,7 +37,8 @@ var app = {
     loadAssets: function() {
         var assets = {
             "heroImages": [],
-            "match": {}
+            "match": {},
+            "rank": []
         };
 
         var loadImage = function(filename) {
@@ -55,6 +56,11 @@ var app = {
         var matchAssets = ["coin", "nocoin", "tick", "cross", "vs"];
         for (var i = 0; i < matchAssets.length; i++) {
             assets.match[matchAssets[i]] = loadImage("match/" + matchAssets[i] + ".png");
+        }
+
+        // load rank assets
+        for (var i = 0; i < 26; i++) {
+            assets.rank.push(loadImage("rank/" + i + ".png"));
         }
 
         return assets;
@@ -394,6 +400,7 @@ var app = {
                 }
 
                 // get images based on match details
+                var rankImg = app.assets.rank[matches[i].rank].src;
                 var victoryImg = app.assets.match[(matches[i].victory) ? "tick" : "cross"].src;
                 var coinImg = app.assets.match[(matches[i].onCoin) ? "coin" : "nocoin"].src;
                 var heroImg = app.assets.heroImages[matches[i].deck.heroClass].src;
@@ -401,14 +408,13 @@ var app = {
                 var oppHeroImg = app.assets.heroImages[matches[i].oppHeroClass].src;
 
                 // get text strings
-                var rank = matches[i].rank;
                 var archetype = matches[i].deck.archetype.displayName;
                 var oppArchetype = matches[i].oppArchetype.displayName;
 
                 // add match div
                 var matchString = "";
+                matchString += "<img class='matchElement matchRank' src='" + rankImg + "' />";
                 matchString += "<img class='matchElement matchVictory' src='" + victoryImg + "' />";
-                matchString += "<span class='matchElement matchRank'>" + rank + "</span>";
                 matchString += "<img class='matchElement matchCoin' src='" + coinImg + "' />";
                 matchString += "<img class='matchElement matchHero' src='" + heroImg + "' />";
                 matchString += "<img class='matchElement matchVersus' src='" + versusImg + "' />";
