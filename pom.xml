@@ -12,7 +12,7 @@
 
     <groupId>com.fullplate.hsgroove</groupId>
     <artifactId>hsgroove</artifactId>
-    <version>0.1.0</version>
+    <version>0.5.0</version>
 
     <build>
         <plugins>
